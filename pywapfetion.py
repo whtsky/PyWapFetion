@@ -3,6 +3,17 @@ import cookielib
 import urllib2
 from urllib import urlencode
 from re import compile
+
+def send2self(mobile,password,message):
+    myfetion = Fetion(mobile,password)
+    myfetion.send2self(message)
+    myfetion.logout()
+
+def sendfetion(mobile,password,mobile2,message):
+    myfetion = Fetion(mobile,password)
+    myfetion.send(mobile2,message)
+    myfetion.logout()
+
 class Fetion :
     def __init__(self,mobile,password,status='4'):
         self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.CookieJar()), urllib2.HTTPHandler)
