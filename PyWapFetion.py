@@ -3,11 +3,15 @@ import cookielib
 import urllib2
 from urllib import urlencode
 from re import compile
-from marshal import load,dump
+__name__ = 'PyWapFetion'
+__author__ = 'whtsky'
+__website__ = 'https://github.com/whtsky/PyWapFetion'
+#Under MIT LICENSE.
 
 #Cache
 class Cache:
     def __init__(self,path):
+        from marshal import load
         self.path=path
         try:
             f=open(path,'rb')
@@ -34,6 +38,7 @@ class Cache:
         
     def save(self):
         f=open(self.path,'wb')
+        from marshal import dump
         dump(self.dict,f)
         f.close()
         
