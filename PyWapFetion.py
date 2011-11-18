@@ -72,17 +72,17 @@ class Fetion:
     def send2self(self,message):
         data = urlencode({'msg':message})
         req = urllib2.Request('http://f.10086.cn/im/user/sendMsgToMyselfs.action',data)
-        self.opener.open(req)
+        return '成功' in self.opener.open(req).read()
         
     def send(self,mobile,message):
-        self.send2id(self.findid(mobile),message)
+        return self.send2id(self.findid(mobile),message)
         
     def addfriend(self,phone,name='xx'):
         data = urlencode({'nickname':name,
                           'number':phone,
                           'type':'0'})
         req = urllib2.Request('http://f.10086.cn/im/user/insertfriendsubmit.action',data)
-        self.opener.open(req)
+        return '成功' in self.opener.open(req).read()
         
     def logout(self):
         self.opener.open('http://f.10086.cn/im/index/logoutsubmit.action')
@@ -126,4 +126,4 @@ class Fetion:
     def send2id(self,id,message):
         data = urlencode({'msg':message})
         req = urllib2.Request('http://f.10086.cn/im/chat/sendMsg.action?touserid='+id,data)
-        self.opener.open(req)
+        return '成功' in self.opener.open(req).read()
