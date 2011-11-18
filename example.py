@@ -1,13 +1,14 @@
-#coding=utf-8
-from pywebfetion import *
-myfetion = Fetion('ÊÖ»úºÅ','ÃÜÂë')
+ï»¿#coding=utf-8
+from PyWapFetion import *
+myfetion = Fetion('æ‰‹æœºå·','å¯†ç ')
 
-myfetion.send2self('·¢¸ø×Ô¼ºµÄ¶«Î÷')
-myfetion.findid('ÊäÈëÊÖ»úºÅ£¬·µ»Ø·ÉĞÅID')
-myfetion.send2id('·ÉĞÅID','ÏûÏ¢')
-myfetion.send('ÊÖ»úºÅ','ÏûÏ¢')
+myfetion.send2self('å‘ç»™è‡ªå·±çš„ä¸œè¥¿')
+myfetion.findid('è¾“å…¥æ‰‹æœºå·ï¼Œè¿”å›é£ä¿¡ID')
+myfetion.send2id('é£ä¿¡ID','æ¶ˆæ¯')
+myfetion.send('æ‰‹æœºå·','æ¶ˆæ¯')
+myfetion.addfriend('æ‰‹æœºå·','ä½ çš„æ˜µç§°ï¼ˆ5å­—ä»¥å†…ï¼‰')
 
 myfetion.logout()
 #----------------------------------------------------------------------
-send2self('ÊÖ»úºÅ','ÃÜÂë','ĞÅÏ¢')
-sendfetion('ÊÖ»úºÅ','ÃÜÂë','½ÓÊÕ·½ÊÖ»úºÅ','ĞÅÏ¢')
+send2self('æ‰‹æœºå·','å¯†ç ','ä¿¡æ¯')
+sendfetion('æ‰‹æœºå·','å¯†ç ','æ¥æ”¶æ–¹æ‰‹æœºå·','ä¿¡æ¯')
