@@ -3,12 +3,13 @@ import cookielib
 import urllib2
 from urllib import urlencode
 from re import compile
+from types import *
 __name__ = 'PyWapFetion'
 __author__ = 'whtsky'
 __website__ = 'https://github.com/whtsky/PyWapFetion'
 __license__ = 'MIT'
 
-#Cache
+#缓存
 class Cache:
     def __init__(self,path):
         from marshal import load
@@ -75,9 +76,13 @@ class Fetion:
         return '成功' in self.opener.open(req).read()
         
     def send(self,mobile,message):
-        if mobile == self.mobile:
-            return self.send2self(message)
-        return self.send2id(self.findid(mobile),message)
+        if type(mobile) != StringType:
+            results = {}
+            for x in mobile:
+                results[x] = self._send(mobile,message)
+            return results
+        else:
+            return self._send(mobile,message)
         
     def addfriend(self,phone,name='xx'):
         data = urlencode({'nickname':name,
@@ -95,7 +100,12 @@ class Fetion:
         del self.idfinder
         self.cache.exit()
         del self.cache
-        
+    
+    def _send(self,mobile,message):
+        if mobile == self.mobile:
+            return self.send2self(message)
+        return self.send2id(self.findid(mobile),message)
+
     def _login(self):
         self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.CookieJar()), urllib2.HTTPHandler)
         data = urlencode({'m':self.mobile,

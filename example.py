@@ -7,6 +7,7 @@ myfetion.findid('输入手机号，返回飞信ID')
 myfetion.send2id('飞信ID','消息')
 myfetion.send('手机号','消息')
 myfetion.addfriend('手机号','你的昵称（5字以内）')
+myfetion.send(['手机号1','手机号2','这就是传说中的群发'],'消息')
 #成功返回True，失败返回False
 
 myfetion.logout()
