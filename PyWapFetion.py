@@ -6,7 +6,7 @@ from re import compile
 __name__ = 'PyWapFetion'
 __author__ = 'whtsky'
 __website__ = 'https://github.com/whtsky/PyWapFetion'
-#Under MIT LICENSE.
+__license__ = 'MIT'
 
 #Cache
 class Cache:
@@ -52,7 +52,7 @@ def send2self(mobile,password,message):
     myfetion.send2self(message)
     myfetion.logout()
 
-def sendfetion(mobile,password,mobile2,message):
+def send(mobile,password,mobile2,message):
     myfetion = Fetion(mobile,password)
     myfetion.send(mobile2,message)
     myfetion.logout()
@@ -75,6 +75,8 @@ class Fetion:
         return '成功' in self.opener.open(req).read()
         
     def send(self,mobile,message):
+        if mobile == self.mobile:
+            return self.send2self(message)
         return self.send2id(self.findid(mobile),message)
         
     def addfriend(self,phone,name='xx'):
