@@ -98,17 +98,18 @@ class Fetion:
             req = urllib2.Request('http://f.10086.cn//im/user/sendTimingMsgToMyselfs.action',data)
         return '成功' in self.opener.open(req).read()
         
-    def send(self,mobile,message):
+    def send(self,mobile,message,sm=False):
+        #SM=Short Message,强制发送短信。
         if type(mobile) != StringType:
             #构建一个字典并将每一个号码的发送结果存入字典
             results = {}
             for x in mobile:
                 #实际的发送操作在_send中
-                results[x] = self._send(x,message)
+                results[x] = self._send(x,message,sm)
             #返回字典
             return results
         else:
-            return self._send(mobile,message)
+            return self._send(mobile,message,sm)
         
     def addfriend(self,phone,name='xx'):
         data = urlencode({'nickname':name,
@@ -133,12 +134,13 @@ class Fetion:
         del self.password
         del self.status
     
-    def _send(self,mobile,message):
+    def _send(self,mobile,message,sm):
+        #SM=Short Message,强制发送短信。
         if mobile is self.mobile:
             #如果传入的手机号是自己的手机号，则调用send2self().
             return self.send2self(message)
         else:    
-            return self.send2id(self.findid(mobile),message)
+            return self.send2id(self.findid(mobile),message,sm)
 
     def _login(self):
         self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.CookieJar()), urllib2.HTTPHandler)
@@ -182,9 +184,13 @@ class Fetion:
         else:
             return self._getid(mobile)
         
-    def send2id(self,id,message):
+    def send2id(self,id,message,sm):
+        #SM=Short Message,强制发送短信。
         data = urlencode({'msg':message})
-        req = urllib2.Request('http://f.10086.cn/im/chat/sendMsg.action?touserid='+id,data)
+        if sm:
+            req = urllib2.Request('http://f.10086.cn/im/chat/sendMsg.action?touserid='+id,data)
+        else:
+            req = urllib2.Request('http://f.10086.cn/im/chat/sendShortMsg.action?touserid='+id,data)
         return '成功' in self.opener.open(req).read()
         
     def alive(self):
