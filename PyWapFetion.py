@@ -95,7 +95,7 @@ class Fetion:
             '''
             data = urlencode({'msg':message,
                               'timing':time})
-            req = urllib2.Request('http://f.10086.cn//im/user/sendTimingMsgToMyselfs.action',data)
+            req = urllib2.Request('http://f.10086.cn/im/user/sendTimingMsgToMyselfs.action',data)
         return '成功' in self.opener.open(req).read()
         
     def send(self,mobile,message,sm=False):
@@ -110,7 +110,13 @@ class Fetion:
             return results
         else:
             return self._send(mobile,message,sm)
-        
+    
+    def changeimpresa(self,impresa):
+        data = urlencode({'impresa':impresa})
+        req = urllib2.Request('http://f.10086.cn/im/user/editimpresaSubmit.action',data)
+        #修改心情后会直接返回主页，所以判断返回的页面中是否存在指定的签名
+        return impresa in self.opener.open(req).read()
+    
     def addfriend(self,phone,name='xx'):
         data = urlencode({'nickname':name,
                           'number':phone,
