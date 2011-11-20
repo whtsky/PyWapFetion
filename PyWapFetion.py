@@ -80,10 +80,22 @@ class Fetion:
         
         self._login()
         
-    def send2self(self,message):
+    def send2self(self,message,time=False):
         #发送给自己
-        data = urlencode({'msg':message})
-        req = urllib2.Request('http://f.10086.cn/im/user/sendMsgToMyselfs.action',data)
+        if time is False:
+            data = urlencode({'msg':message})
+            req = urllib2.Request('http://f.10086.cn/im/user/sendMsgToMyselfs.action',data)
+        else:
+            '''发送定时短信。格式：年月日小时分钟
+            如：2011年11月20日11时14分：201111201144
+                2012年11月11日11时11分：201211111111
+            注意：时间允许范围：当前时刻向后10分钟-向后1年
+            如：当前时间：2011年11月20日 11:17
+            有效时间范围是:2011年11月20日11:27分到2012年11月20日11:27分
+            '''
+            data = urlencode({'msg':message,
+                              'timing':time})
+            req = urllib2.Request('http://f.10086.cn//im/user/sendTimingMsgToMyselfs.action',data)
         return '成功' in self.opener.open(req).read()
         
     def send(self,mobile,message):

@@ -9,6 +9,7 @@ myfetion.send('手机号','消息')
 myfetion.addfriend('手机号','你的昵称（5字以内）')
 myfetion.send(['手机号1','手机号2','这就是传说中的群发'],'消息')
 #成功返回True，失败返回False
+myfetion.send2self('这个是发给自己的定时短信',time='201111201120')#2011年11月20日11时20分发送
 
 myfetion.alive()#保持在线，10分钟以上无操作会被判定为离线
 
