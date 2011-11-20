@@ -122,7 +122,7 @@ class Fetion:
         del self.status
     
     def _send(self,mobile,message):
-        if mobile == self.mobile:
+        if mobile is self.mobile:
             #如果传入的手机号是自己的手机号，则调用send2self().
             return self.send2self(message)
         else:    
@@ -139,7 +139,7 @@ class Fetion:
         
     def _getid(self,mobile):
         #如果尚未构建正则表达式对象，则创建
-        if self.idfinder == False:
+        if self.idfinder is False:
             from re import compile
             self.idfinder = compile('touserid=(\d*)')
             
@@ -174,3 +174,8 @@ class Fetion:
         data = urlencode({'msg':message})
         req = urllib2.Request('http://f.10086.cn/im/chat/sendMsg.action?touserid='+id,data)
         return '成功' in self.opener.open(req).read()
+        
+    def alive(self):
+        #10分钟无操作，则WAP飞信会自动退出
+        #用于保持登录状态。若已离线则返回False.
+        return '心情' in self.opener.open('http://f.10086.cn/im/index/indexcenter.action').read()
