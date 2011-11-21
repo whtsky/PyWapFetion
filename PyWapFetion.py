@@ -3,7 +3,9 @@ import cookielib
 import urllib2
 from urllib import urlencode
 from types import *
+
 __name__ = 'PyWapFetion'
+__version__ = '0.5'
 __author__ = 'whtsky'
 __website__ = 'https://github.com/whtsky/PyWapFetion'
 __license__ = 'MIT'
