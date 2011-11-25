@@ -2,13 +2,46 @@
 import cookielib
 import urllib2
 from urllib import urlencode
-from types import *
+from types import StringType
+from time import sleep
+
+#有些主机可能不支持多线程
+try:
+    from threading import Thread
+except:
+    _have_thread_ = False
+else:
+    _have_thread_ = True
 
 __name__ = 'PyWapFetion'
-__version__ = '0.5'
+__version__ = '0.6'
 __author__ = 'whtsky'
 __website__ = 'https://github.com/whtsky/PyWapFetion'
 __license__ = 'MIT'
+
+__all__ = ['Cache','Fetion','send2self','send']
+
+#状态保持
+if _have_thread_ is True:
+    class AliveKeeper(Thread):
+        def __init__(self,Fetion,sleeptime=480,Daemon=True,start=True):#默认每480秒登陆一次
+            self.Fetion = Fetion
+            Thread.__init__(self, name = 'AliveKeeper of' + self.Fetion.mobile)
+            self.on = True
+            self.sleeptime = sleeptime
+            self.setDaemon(Daemon)
+            if start:
+                self.start()
+            
+        def run(self):
+            while self.on and self.Fetion.alive():
+                sleep(self.sleeptime)
+            
+        def stop(self):
+            self.on = False
+            return not self.on
+    
+    __all__.append('AliveKeeper')
 
 #缓存
 class Cache:
@@ -45,11 +78,15 @@ class Cache:
         
     def save(self):
         #将字典保存到文件
-        from marshal import dump
-        f = open(self.path,'wb')
-        dump(self.dict,f)
-        f.close()
-        del f
+        try:
+            from marshal import dump
+            f = open(self.path,'wb')
+            dump(self.dict,f)
+            f.close()
+            del f
+            return True
+        except:
+            return False
         
     def exit(self):
         self.save()
@@ -67,7 +104,7 @@ def send(mobile,password,mobile2,message):
     x.logout()
 
 class Fetion:
-    def __init__(self,mobile,password,status='4',cachefile='Fetion.cache'):
+    def __init__(self,mobile,password,status='4',cachefile='Fetion.cache',keepalive=True):
         #如不使用缓存，则设cachefile=False
         if cachefile:
             self.cache = Cache(cachefile)
@@ -82,6 +119,9 @@ class Fetion:
         
         self._login()
         
+        if _have_thread_ and keepalive:
+            self.alivekeeper = AliveKeeper(self)
+                
     def send2self(self,message,time=False):
         #发送给自己
         if time is False:
@@ -134,13 +174,14 @@ class Fetion:
             del self.idfinder
             self.cache.exit()
             del self.cache
-        except:
-            pass
-        #扫尾工作
-        del self.opener
-        del self.mobile
-        del self.password
-        del self.status
+            self.alivekeeper.stop()
+            del self.alivekeeper
+        finally:
+            #扫尾工作
+            del self.opener
+            del self.mobile
+            del self.password
+            del self.status
     
     def _send(self,mobile,message,sm):
         #SM=Short Message,强制发送短信。
