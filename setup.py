@@ -1,17 +1,18 @@
 ﻿#coding=utf-8
-from setuptools import setup
+from setuptools import setup,find_packages
 import PyWapFetion
 
 setup(
 name = PyWapFetion.__name__,
 version = PyWapFetion.__version__,
 
-py_modules=['PyWapFetion'],
+packages = find_packages(),
 keywords = 'library mobile fetion',
 author = PyWapFetion.__author__,
 author_email = 'whtsky@vip.qq.com',
 
 url = PyWapFetion.__website__,
+download_url = 'http://github.com/whtsky/PyWapFetion/downloads',
 description = 'A simple python lib for WapFetion',
 long_description = '''
 Fetion SDK for Python.
@@ -42,6 +43,8 @@ classifiers = [
 'Programming Language :: Python :: 2.6',
 'Programming Language :: Python :: 2.7',
 'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries',
-'Topic :: Utilities'
+'Topic :: Utilities',
+'Topic :: Software Development :: Libraries :: Python Modules',
 ],
+zip_safe = True,
 )

@@ -16,7 +16,7 @@ else:
 __name__ = 'PyWapFetion'
 __version__ = '0.6'
 __author__ = 'whtsky'
-__website__ = 'https://github.com/whtsky/PyWapFetion'
+__website__ = 'http://github.com/whtsky/PyWapFetion'
 __license__ = 'MIT'
 
 #状态保持
