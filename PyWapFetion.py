@@ -204,9 +204,13 @@ class Fetion:
         
     def _getid(self,mobile):
         #获得HTML页面
-        data = urlencode({'searchText':mobile})
-        req = urllib2.Request('http://f.10086.cn/im/index/searchOtherInfoList.action',data)
-        htm = self.opener.open(req).read()
+        try:
+            data = urlencode({'searchText':mobile})
+            req = urllib2.Request('http://f.10086.cn/im/index/searchOtherInfoList.action',data)
+            htm = self.opener.open(req).read()
+        except:
+            return False
+            #移动的服务器挂了，认命吧。
         
         try:
             #正则匹配飞信ID
