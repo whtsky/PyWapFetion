@@ -22,7 +22,7 @@ __license__ = 'MIT'
 #状态保持
 if _have_thread_ is True:
     class AliveKeeper(Thread):
-        def __init__(self,Fetion,sleeptime=480,Daemon=True,start=True):#默认每480秒登陆一次
+        def __init__(self,Fetion,sleeptime=240,Daemon=True,start=True):#默认每480秒登陆一次
             self.Fetion = Fetion
             Thread.__init__(self, name = 'AliveKeeper of' + self.Fetion.mobile)
             self.on = True

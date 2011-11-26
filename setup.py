@@ -14,11 +14,10 @@ author_email = 'whtsky@vip.qq.com',
 url = PyWapFetion.__website__,
 description = 'A simple python lib for WapFetion',
 long_description = '''
-Fetion SDK for Python.
+PyWapFetion is a SDK of WapFetion for Python.
 
 Fetion is a popular IM made by China Mobile.It can send short message to your friends with no cost.
 You can send a short message to your mobile phone with no cost,too.And it supports to send TIMING message.
-PyWapFetion is a SDK of WapFetion for Python.
 If you want to send Fetion message quickly and easily,PyWapFetion is your BEST choice.
 
 Get to https://github.com/whtsky/PyWapFetion for more information.
