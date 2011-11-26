@@ -62,6 +62,10 @@ class Cache:
     def put(self,phone,id):
         #将ID存入字典
         self.dict[phone] = id
+        try:
+            return id in self.dict[phone]
+        except:
+            return False
         
     def rm(self,phone):
         #从字典中删除ID
@@ -93,11 +97,13 @@ def send2self(mobile,password,message):
     x = Fetion(mobile,password)
     x.send2self(message)
     x.logout()
+    del x
 
 def send(mobile,password,mobile2,message):
     x = Fetion(mobile,password)
     x.send(mobile2,message)
     x.logout()
+    del x
 
 class Fetion:
     def __init__(self,mobile,password,status='4',cachefile='Fetion.cache',keepalive=True):
@@ -105,9 +111,9 @@ class Fetion:
         if cachefile:
             self.cache = Cache(cachefile)
         else:
-            self.cache = False
-        #在有缓存的情况下，创建对象时不载入正则，提高速度。           
-        self.idfinder = False
+            from re import compile
+            self.idfinder = compile('touserid=(\d*)')
+            #在有缓存的情况下，创建对象时不载入正则，提高速度。           
             
         self.mobile = mobile
         self.password = password
@@ -197,26 +203,28 @@ class Fetion:
         self.opener.open(req) 
         
     def _getid(self,mobile):
-        #如果尚未构建正则表达式对象，则创建
-        if self.idfinder is False:
-            from re import compile
-            self.idfinder = compile('touserid=(\d*)')
-            
         #获得HTML页面
         data = urlencode({'searchText':mobile})
         req = urllib2.Request('http://f.10086.cn/im/index/searchOtherInfoList.action',data)
         htm = self.opener.open(req).read()
         
-        #正则匹配飞信ID
-        result = self.idfinder.findall(htm)
-        
+        try:
+            #正则匹配飞信ID
+            result = self.idfinder.findall(htm)
+        except:
+            #如果尚未构建正则表达式对象，则创建
+            from re import compile
+            self.idfinder = compile('touserid=(\d*)')
+            
+            result = self.idfinder.findall(htm)       
+                
         #找到返回ID，否则返回False
         if len(result) > 0:
-            return result[0] 
+            return result[0]
         return False
         
     def findid(self,mobile):
-        if self.cache:
+        try:
             #如果开启缓存（默认开启），则查找缓存文件
             id = self.cache.get(mobile)
             if id:
@@ -226,7 +234,7 @@ class Fetion:
                 id = self._getid(mobile)
                 self.cache.put(mobile,id)
                 return id
-        else:
+        except:
             return self._getid(mobile)
         
     def send2id(self,id,message,sm):
