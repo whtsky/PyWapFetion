@@ -15,5 +15,5 @@ PyWapFetion是一个飞信的Python模块，使用Wap飞信协议。
 
 怎么玩？
 ==========
-抱回家之后，直接在Python里import就可以。参考example.py
+抱回家之后，直接在Python里import就可以。参考example.py  
 如果没有抱回家，那么把PyWapFetion当前目录下再import.  
