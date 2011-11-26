@@ -1,3 +1,6 @@
 *.pyc
 *.cache
 test.py
+PyWapFetion.egg-info/
+build/
+dist/

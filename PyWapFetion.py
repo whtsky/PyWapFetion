@@ -19,8 +19,6 @@ __author__ = 'whtsky'
 __website__ = 'https://github.com/whtsky/PyWapFetion'
 __license__ = 'MIT'
 
-__all__ = ['Cache','Fetion','send2self','send']
-
 #状态保持
 if _have_thread_ is True:
     class AliveKeeper(Thread):
@@ -41,8 +39,6 @@ if _have_thread_ is True:
             self.on = False
             return not self.on
     
-    __all__.append('AliveKeeper')
-
 #缓存
 class Cache:
     def __init__(self,path):
