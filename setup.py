@@ -12,7 +12,6 @@ author = PyWapFetion.__author__,
 author_email = 'whtsky@vip.qq.com',
 
 url = PyWapFetion.__website__,
-download_url = 'https://github.com/whtsky/PyWapFetion/zipball/master',
 description = 'A simple python lib for WapFetion',
 long_description = '''
 Fetion SDK for Python.
