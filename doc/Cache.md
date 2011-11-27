@@ -1,17 +1,17 @@
-PyWapFetion£º»º´æ
+ï»¿PyWapFetionï¼šç¼“å­˜
 =================
 
-¸ÅÊö
+æ¦‚è¿°
 ====
-PyWapFetionÊÇ»ùÓÚWapFetionµÄ·ÉÐÅSDK£¬WapFetionÖÐµÄÐÅÏ¢·¢ËÍ²Ù×÷ÐèÒª½ÓÊÕ·½µÄ·ÉÐÅID.  
-È¡µÃ·ÉÐÅIDµÄ·½·¨ÊÇÖ´ÐÐËÑË÷->ÕýÔò±í´ïÊ½È¡Î¨Ò»µÄIDÖµ¡£  
-µ«ÕâÑùÓÐÐ©ÎÊÌâ£º  
-* ÕýÔò±í´ïÊ½±Ï¾¹ÓÐÊ±¼äÏûºÄ  
-* ÍøÂç²Ù×÷¸üÓÐÊ±¼äÏûºÄ  
-* ×î¿Ö²ÀµÄÊÇ£¬ÒÆ¶¯µÄ·þÎñÆ÷»¹²»ÎÈ¶¨£¬¾­³£»á³öÏÖ·ÃÎÊ´íÎó  
-ËùÒÔ£¬ÎÒÃÇÐèÒª»º´æÀ´Ìá¸ßËÙ¶ÈºÍÎÈ¶¨ÐÔ¡£  
+PyWapFetionæ˜¯åŸºäºŽWapFetionçš„é£žä¿¡SDKï¼ŒWapFetionä¸­çš„ä¿¡æ¯å‘é€æ“ä½œéœ€è¦æŽ¥æ”¶æ–¹çš„é£žä¿¡ID.  
+å–å¾—é£žä¿¡IDçš„æ–¹æ³•æ˜¯æ‰§è¡Œæœç´¢->æ­£åˆ™è¡¨è¾¾å¼å–å”¯ä¸€çš„IDå€¼ã€‚  
+ä½†è¿™æ ·æœ‰äº›é—®é¢˜ï¼š  
+* æ­£åˆ™è¡¨è¾¾å¼æ¯•ç«Ÿæœ‰æ—¶é—´æ¶ˆè€—  
+* ç½‘ç»œæ“ä½œæ›´æœ‰æ—¶é—´æ¶ˆè€—  
+* æœ€ææ€–çš„æ˜¯ï¼Œç§»åŠ¨çš„æœåŠ¡å™¨è¿˜ä¸ç¨³å®šï¼Œç»å¸¸ä¼šå‡ºçŽ°è®¿é—®é”™è¯¯  
+æ‰€ä»¥ï¼Œæˆ‘ä»¬éœ€è¦ç¼“å­˜æ¥æé«˜é€Ÿåº¦å’Œç¨³å®šæ€§ã€‚  
 
-½á¹¹
+ç»“æž„
 ====
     class Cache:  
         def __init__(self,path)  
@@ -21,26 +21,26 @@ PyWapFetionÊÇ»ùÓÚWapFetionµÄ·ÉÐÅSDK£¬WapFetionÖÐµÄÐÅÏ¢·¢ËÍ²Ù×÷ÐèÒª½ÓÊÕ·½µÄ·ÉÐÅID
         def save(self)  
         def exit(self)  
        
-Ê¹ÓÃ
+ä½¿ç”¨
 ====    
     from PyWapFetion import Cache  
     cache = Cache(path = 'filename')  
-path£º»º´æÎÄ¼þÂ·¾¶¡£¿ÉÒÔÊÇÏà¶ÔÂ·¾¶£¬Ò²¿ÉÒÔÊÇ¾ø¶ÔÂ·¾¶¡£  
-ÔÚ´´½¨FetionÀàÊ±Ä¬ÈÏ¿ªÆô»º´æ£¬»º´æµÄÄ¬ÈÏÎÄ¼þÃûÎª`Fetion.cache`    
-Cache°ÑÊÖ»úºÅÓë·ÉÐÅºÅ´æÈë×Öµä£¬ÔÚ³õÊ¼»¯Ê±´ÓÎÄ¼þ¶ÁÈë×Öµä£¨Ã»ÓÐÔòÐÂ½¨£©£¬ÔÚµ÷ÓÃ`save()`Ê±½«×Öµä±£´æµ½ÎÄ¼þ¡£  
-1. get():´Ó»º´æÖÐ¶ÁÈ¡Êý¾Ý  
-Ê¾Àý£º`get('ÊÖ»úºÅ')`¡£Èç¹û´æÔÚ±¾Êý¾Ý·µ»Ø·ÉÐÅºÅ£¬·ñÔò·µ»ØFalse  
-2.put():½«Êý¾ÝÐ´Èë»º´æ  
-Ê¾Àý£º`put('ÊÖ»úºÅ','·ÉÐÅºÅ')`¡£Ð´Èë³É¹¦·µ»ØTrue£¬·ñÔò·µ»ØFalse  
-3.rm():´Ó»º´æÖÐÉ¾³ýÊý¾Ý  
-Ê¾Àý£º`rm('·ÉÐÅºÅ')`¡£É¾³ý³É¹¦·µ»ØTrue£¬·ñÔò·µ»ØFalse  
-4.save()£º±£´æ»º´æµ½ÎÄ¼þ  
-Ê¾Àý£º`save()`¡£  
-5.exit()£ºÍË³ö»º´æ
-Ê¾Àý£º`exit()`¡£»á×Ô¶¯±£´æÊý¾Ý²¢É¾³ý±äÁ¿¡£
+pathï¼šç¼“å­˜æ–‡ä»¶è·¯å¾„ã€‚å¯ä»¥æ˜¯ç›¸å¯¹è·¯å¾„ï¼Œä¹Ÿå¯ä»¥æ˜¯ç»å¯¹è·¯å¾„ã€‚  
+åœ¨åˆ›å»ºFetionç±»æ—¶é»˜è®¤å¼€å¯ç¼“å­˜ï¼Œç¼“å­˜çš„é»˜è®¤æ–‡ä»¶åä¸º`Fetion.cache`    
+CacheæŠŠæ‰‹æœºå·ä¸Žé£žä¿¡å·å­˜å…¥å­—å…¸ï¼Œåœ¨åˆå§‹åŒ–æ—¶ä»Žæ–‡ä»¶è¯»å…¥å­—å…¸ï¼ˆæ²¡æœ‰åˆ™æ–°å»ºï¼‰ï¼Œåœ¨è°ƒç”¨`save()`æ—¶å°†å­—å…¸ä¿å­˜åˆ°æ–‡ä»¶ã€‚  
+1. get():ä»Žç¼“å­˜ä¸­è¯»å–æ•°æ®  
+ç¤ºä¾‹ï¼š`get('æ‰‹æœºå·')`ã€‚å¦‚æžœå­˜åœ¨æœ¬æ•°æ®è¿”å›žé£žä¿¡å·ï¼Œå¦åˆ™è¿”å›žFalse  
+2.put():å°†æ•°æ®å†™å…¥ç¼“å­˜  
+ç¤ºä¾‹ï¼š`put('æ‰‹æœºå·','é£žä¿¡å·')`ã€‚å†™å…¥æˆåŠŸè¿”å›žTrueï¼Œå¦åˆ™è¿”å›žFalse  
+3.rm():ä»Žç¼“å­˜ä¸­åˆ é™¤æ•°æ®  
+ç¤ºä¾‹ï¼š`rm('é£žä¿¡å·')`ã€‚åˆ é™¤æˆåŠŸè¿”å›žTrueï¼Œå¦åˆ™è¿”å›žFalse  
+4.save()ï¼šä¿å­˜ç¼“å­˜åˆ°æ–‡ä»¶  
+ç¤ºä¾‹ï¼š`save()`ã€‚  
+5.exit()ï¼šé€€å‡ºç¼“å­˜
+ç¤ºä¾‹ï¼š`exit()`ã€‚ä¼šè‡ªåŠ¨ä¿å­˜æ•°æ®å¹¶åˆ é™¤å˜é‡ã€‚
 
 
-×¢Òâ
+æ³¨æ„
 ====
-* CacheÀàÊ¹ÓÃPythonÄÚÖÃµÄmarshalÄ£¿é½øÐÐ³Ö¾Ã»¯´¢´æ£¬marshalÄ£¿é**²»ÄÜ±£Ö¤¸÷°æ±¾¼äµÄ¼æÈÝÐÔ**¡£Èç¹ûÄãÒª¸ü»»Python°æ±¾£¬ÇëÊÖ¶¯É¾³ý»º´æÎÄ¼þ£¨Ä¬ÈÏÃûÎª`Fetion.cache`£©¡£  
-* ÒòÎªCacheÊÇÔÚµ÷ÓÃ`save()`Ê±²Å±£´æÎÄ¼þµ½¸ü¸Ä£¬Çë±£Ö¤**Ã¿Ò»¸öCacheÊµÀý¶ÀÏíÒ»¸ö»º´æÎÄ¼þ**  
+* Cacheç±»ä½¿ç”¨Pythonå†…ç½®çš„marshalæ¨¡å—è¿›è¡ŒæŒä¹…åŒ–å‚¨å­˜ï¼Œmarshalæ¨¡å—**ä¸èƒ½ä¿è¯å„ç‰ˆæœ¬é—´çš„å…¼å®¹æ€§**ã€‚å¦‚æžœä½ è¦æ›´æ¢Pythonç‰ˆæœ¬ï¼Œè¯·æ‰‹åŠ¨åˆ é™¤ç¼“å­˜æ–‡ä»¶ï¼ˆé»˜è®¤åä¸º`Fetion.cache`ï¼‰ã€‚  
+* å› ä¸ºCacheæ˜¯åœ¨è°ƒç”¨`save()`æ—¶æ‰ä¿å­˜æ–‡ä»¶åˆ°æ›´æ”¹ï¼Œè¯·ä¿è¯**æ¯ä¸€ä¸ªCacheå®žä¾‹ç‹¬äº«ä¸€ä¸ªç¼“å­˜æ–‡ä»¶**  
