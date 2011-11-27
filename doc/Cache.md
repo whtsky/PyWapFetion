@@ -31,7 +31,8 @@ class Cache:
 ====    
 ```python
 from PyWapFetion import Cache  
-cache = Cache(path = 'filename')```  
+cache = Cache(path = 'filename')
+```  
 path：缓存文件路径。可以是相对路径，也可以是绝对路径。  
 在创建Fetion类时默认开启缓存，缓存的默认文件名为`Fetion.cache`    
 Cache把手机号与飞信号存入字典，在初始化时从文件读入字典（没有则新建），在调用`save()`时将字典保存到文件。  
