@@ -17,14 +17,16 @@ PyWapFetion是基于WapFetion的飞信SDK，WapFetion中的信息发送操作需
 
 结构
 ====
-    class Cache:  
-        def __init__(self,path)  
-        def get(self,phone)  
-        def put(self,phone,id)  
-        def rm(self,phone)  
-        def save(self)  
-        def exit(self)  
-       
+```python
+class Cache:  
+    def __init__(self,path)  
+    def get(self,phone)  
+    def put(self,phone,id)  
+    def rm(self,phone)  
+    def save(self)  
+    def exit(self)  
+```
+    
 使用
 ====    
     from PyWapFetion import Cache  
