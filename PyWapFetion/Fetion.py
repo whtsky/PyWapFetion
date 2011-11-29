@@ -4,6 +4,7 @@ import urllib2
 from urllib import urlencode
 from types import StringType
 from time import sleep
+from Error import Returner
 
 #有些主机可能不支持多线程
 try:
@@ -12,12 +13,6 @@ except:
     _have_thread_ = False
 else:
     _have_thread_ = True
-
-__name__ = 'PyWapFetion'
-__version__ = '0.6'
-__author__ = 'whtsky'
-__website__ = 'http://github.com/whtsky/PyWapFetion'
-__license__ = 'MIT'
 
 #状态保持
 if _have_thread_ is True:
@@ -93,18 +88,6 @@ class Cache:
         del self.path
         del self.dict
         
-def send2self(mobile,password,message):
-    x = Fetion(mobile,password,keepalive=False)#不用保持状态，减少内存消耗
-    x.send2self(message)
-    x.logout()
-    del x
-
-def send(mobile,password,to,message):
-    x = Fetion(mobile,password,keepalive=False)#不用保持状态，减少内存消耗
-    x.send(to,message)
-    x.logout()
-    del x
-
 class Fetion:
     def __init__(self,mobile,password,status='4',cachefile='Fetion.cache',keepalive=True):
         #如不使用缓存，则设cachefile=False
@@ -140,7 +123,7 @@ class Fetion:
             data = urlencode({'msg':message,
                               'timing':time})
             req = urllib2.Request('http://f.10086.cn/im/user/sendTimingMsgToMyselfs.action',data)
-        return '成功' in self.opener.open(req).read()
+        return Returner(self.opener.open(req).read())
         
     def send(self,mobile,message,sm=False):
         #SM=Short Message,强制发送短信。
@@ -166,7 +149,7 @@ class Fetion:
                           'number':phone,
                           'type':'0'})
         req = urllib2.Request('http://f.10086.cn/im/user/insertfriendsubmit.action',data)
-        return '成功' in self.opener.open(req).read()
+        return Returner(self.opener.open(req).read())
         
     def logout(self):
         #退出飞信，否则可能会影响正常短信收发
@@ -241,14 +224,16 @@ class Fetion:
         except:
             return self._getid(mobile)
         
-    def send2id(self,id,message,sm):
+    def send2id(self,id,message,sm=False):
+        if id is False:
+            return False
         #SM=Short Message,强制发送短信。
         data = urlencode({'msg':message})
         if sm:
             req = urllib2.Request('http://f.10086.cn/im/chat/sendMsg.action?touserid='+id,data)
         else:
             req = urllib2.Request('http://f.10086.cn/im/chat/sendShortMsg.action?touserid='+id,data)
-        return '成功' in self.opener.open(req).read()
+        return Returner(self.opener.open(req).read())
         
     def alive(self):
         #10分钟无操作，则WAP飞信会自动退出
