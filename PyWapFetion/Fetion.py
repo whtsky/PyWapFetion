@@ -6,6 +6,7 @@ from types import StringType
 from time import sleep
 from Error import Returner
 from re import compile
+from marshal import dump,load
 
 #有些主机可能不支持多线程
 try:
@@ -38,7 +39,6 @@ if _have_thread_ is True:
 #缓存
 class Cache:
     def __init__(self,path):
-        from marshal import load
         self.path = path
         try:
             f = open(path,'rb')
@@ -47,7 +47,7 @@ class Cache:
             del f
         except:
             self.dict={}
-        
+            
     def get(self,phone):
         #从字典中取飞信ID，成功返回ID，失败返回False
         try:
@@ -59,7 +59,7 @@ class Cache:
         #将ID存入字典
         self.dict[phone] = id
         try:
-            return id in self.dict[phone]
+            return id is self.dict[phone]
         except:
             return False
         
@@ -67,22 +67,21 @@ class Cache:
         #从字典中删除ID
         try:
             self.dict.pop[phone]
-            return True
         except:
             #如字典中没有本ID则返回False
             return False
+        return True
         
     def save(self):
+        f = open(self.path,'wb')
         #将字典保存到文件
         try:
-            from marshal import dump
-            f = open(self.path,'wb')
             dump(self.dict,f)
-            f.close()
-            del f
-            return True
         except:
             return False
+        f.close()
+        del f
+        return True
         
     def exit(self):
         self.save()
@@ -131,11 +130,7 @@ class Fetion:
         if type(mobile) != StringType:
             #构建一个字典并将每一个号码的发送结果存入字典
             results = {}
-            for x in mobile:
-                #实际的发送操作在_send中
-                results[x] = self._send(x,message,sm)
-            #返回字典
-            return results
+            return tuple([self._send(x,message,sm) for x in mobile])
         else:
             return self._send(mobile,message,sm)
     
@@ -187,22 +182,20 @@ class Fetion:
         self.opener.open(req) 
         
     def _getid(self,mobile):
+        data = urlencode({'searchText':mobile})
+        req = urllib2.Request('http://f.10086.cn/im/index/searchOtherInfoList.action',data)
         #获得HTML页面
         try:
-            data = urlencode({'searchText':mobile})
-            req = urllib2.Request('http://f.10086.cn/im/index/searchOtherInfoList.action',data)
             htm = self.opener.open(req).read()
         except:
             return False
             #移动的服务器挂了，认命吧。
         
-        try:
-            #正则匹配飞信ID
-            result = self.idfinder.findall(htm)
-        except:
+        if not hasattr(self,'idfinder'):
             #如果尚未构建正则表达式对象，则创建
             self.idfinder = compile('touserid=(\d*)')
-            result = self.idfinder.findall(htm)       
+        #正则匹配飞信ID
+        result = self.idfinder.findall(htm)       
                 
         #找到返回ID，否则返回False
         if len(result) > 0:
@@ -210,7 +203,7 @@ class Fetion:
         return False
         
     def findid(self,mobile):
-        try:
+        if hasattr(self,'cache'):
             #如果开启缓存（默认开启），则查找缓存文件
             id = self.cache.get(mobile)
             if id:
@@ -220,8 +213,7 @@ class Fetion:
                 id = self._getid(mobile)
                 self.cache.put(mobile,id)
                 return id
-        except:
-            return self._getid(mobile)
+        return self._getid(mobile)
         
     def send2id(self,id,message,sm=False):
         if id is False:
@@ -237,9 +229,13 @@ class Fetion:
     def getmessage(self):
         web = self.opener.open('http://f.10086.cn/im/box/alllist.action').read()
         Returner(web) #确保在登录状态中
-        '''
-        尚未完成
-        '''
+        if not hasattr(self,'fidfinder'):
+            self.fidfinder     = compile('<a href="/im/chat/toinputMsg.action\?touserid=(\d*)&amp;')
+            self.namefinder    = compile('<a href="/im/chat/toinputMsg.action\?touserid=\d*&amp;box=true&amp;t=\d*">([^/]*)</a>:')
+            self.contentfinder = compile('<a href="/im/chat/toinputMsg.action\?touserid=\d*&amp;box=true&amp;t=\d*">[^/]*</a>:(.*?)<br/>')
+        fids = self.fidfinder.findall(web)
+        [self.opener.open(urllib2.Request('http://f.10086.cn/im/box/deleteMessages.action',urlencode({'fromIdUser':x}))) for x in fids]
+        return tuple([tuple([fids[i],self.namefinder.findall(web)[i],self.contentfinder.findall(web)[i]]) for i in range(len(fids))])
     
     def alive(self):
         #10分钟无操作，则WAP飞信会自动退出
