@@ -241,3 +241,5 @@ class Fetion:
         #10分钟无操作，则WAP飞信会自动退出
         #用于保持登录状态。若已离线则返回False.
         return '心情' in self.opener.open('http://f.10086.cn/im/index/indexcenter.action').read()
+        
+        

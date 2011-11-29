@@ -11,3 +11,5 @@ def Returner(html):
         raise FetionNotYourFriend
     else:
         return '成功' in html
+        
+        
