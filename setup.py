@@ -26,6 +26,8 @@ Get to https://github.com/whtsky/PyWapFetion for more information.
 * Auto keep alive support
 * Quick Send support:send a message in one line.(See example.py)
 * Easy to use
+* You can receive your messages!
+* Throw Exception smartly
 * NO CAPTCHA during using it
 * Supports Python 2.5 - 2.7
 * You can use 2to3 to make it support Python 3
