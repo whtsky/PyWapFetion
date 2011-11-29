@@ -5,6 +5,7 @@ from urllib import urlencode
 from types import StringType
 from time import sleep
 from Error import Returner
+from re import compile
 
 #有些主机可能不支持多线程
 try:
@@ -200,9 +201,7 @@ class Fetion:
             result = self.idfinder.findall(htm)
         except:
             #如果尚未构建正则表达式对象，则创建
-            from re import compile
             self.idfinder = compile('touserid=(\d*)')
-            
             result = self.idfinder.findall(htm)       
                 
         #找到返回ID，否则返回False
@@ -234,7 +233,14 @@ class Fetion:
         else:
             req = urllib2.Request('http://f.10086.cn/im/chat/sendShortMsg.action?touserid='+id,data)
         return Returner(self.opener.open(req).read())
-        
+    
+    def getmessage(self):
+        web = self.opener.open('http://f.10086.cn/im/box/alllist.action').read()
+        Returner(web) #确保在登录状态中
+        '''
+        尚未完成
+        '''
+    
     def alive(self):
         #10分钟无操作，则WAP飞信会自动退出
         #用于保持登录状态。若已离线则返回False.
