@@ -10,13 +10,13 @@ __license__ = 'MIT'
 from Fetion import Fetion
 
 def send2self(mobile,password,message):
-    x = Fetion(mobile,password,keepalive=False)#不用保持状态，减少内存消耗
+    x = Fetion(mobile,password)
     x.send2self(message)
     x.logout()
     del x
 
 def send(mobile,password,to,message):
-    x = Fetion(mobile,password,keepalive=False)#不用保持状态，减少内存消耗
+    x = Fetion(mobile,password)
     x.send(to,message)
     x.logout()
     del x

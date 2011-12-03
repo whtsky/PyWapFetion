@@ -8,7 +8,7 @@ from re import compile
 from Cache import Cache
             
 class Fetion:
-    def __init__(self,mobile,password,status='4',cachefile='Fetion.cache',keepalive=True):
+    def __init__(self,mobile,password,status='4',cachefile='Fetion.cache',keepalive=False):
         if cachefile is not None: self.cache = Cache(cachefile)
         else: self.idfinder = compile('touserid=(\d*)')#在有缓存的情况下，创建对象时不载入正则，提高速度。           
             

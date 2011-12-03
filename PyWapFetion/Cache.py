@@ -5,42 +5,26 @@ class Cache:
         self.path = path
         try:
             f = open(path,'rb')
+        except:
+            self.dict={}
+        else:
             self.dict = load(f)
             f.close()
             del f
-        except:
-            self.dict={}
             
-    def get(self,phone):
-        #从字典中取飞信ID，成功返回ID，失败返回None
+    def get(self,phone):#从字典中取飞信ID，成功返回ID，失败返回None
         try:
             return self.dict[phone]
         except:
             return None
             
-    def put(self,phone,id):
-        #将ID存入字典
-        self.dict[phone] = id
+    put = lambda self,phone,id:self.dict[phone] = id#将ID存入字典
         
-    def rm(self,phone):
-        #从字典中删除ID
-        try:
-            self.dict.pop[phone]
-        except:
-            #如字典中没有本ID则返回False
-            return False
-        return True
-        
-    def save(self):
+    def save(self):#将字典保存到文件
         f = open(self.path,'wb')
-        #将字典保存到文件
-        try:
-            dump(self.dict,f)
-        except:
-            return False
+        dump(self.dict,f)
         f.close()
         del f
-        return True
         
     def exit(self):
         self.save()
