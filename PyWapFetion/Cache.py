@@ -21,10 +21,6 @@ class Cache:
     def put(self,phone,id):
         #将ID存入字典
         self.dict[phone] = id
-        try:
-            return id is self.dict[phone]
-        except:
-            return False
         
     def rm(self,phone):
         #从字典中删除ID
@@ -48,5 +44,4 @@ class Cache:
         
     def exit(self):
         self.save()
-        del self.path
-        del self.dict
+        del self.path,self.dict

@@ -11,10 +11,6 @@ class AliveKeeper(Thread):
         if start:
             self.start()
             
-    def run(self):
-        while self.on and '登陆' is not in self.Opener.open('http://f.10086.cn/im/index/indexcenter.action').read():
-            sleep(self.sleeptime)
+    def run(self): while self.on and '登陆' is not in self.Opener.open('http://f.10086.cn/im/index/indexcenter.action').read():sleep(self.sleeptime)
             
-    def stop(self):
-        self.on = False
-        return not self.on
+    stop = lambda self:self.on = False

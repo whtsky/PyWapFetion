@@ -3,4 +3,3 @@ class FetionNotLogin(Exception):
     pass
 class FetionNotYourFriend(Exception):
     pass
-
