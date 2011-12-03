@@ -4,7 +4,7 @@ import urllib2
 from urllib import urlencode
 from types import StringType
 from time import sleep
-from Error import Returner
+from Errors import *
 from re import compile
 from marshal import dump,load
 
@@ -110,8 +110,8 @@ class Fetion:
     def send2self(self,message,time=False):
         #发送给自己
         if time is False:
-            data = urlencode({'msg':message})
-            req = urllib2.Request('http://f.10086.cn/im/user/sendMsgToMyselfs.action',data)
+            data = {'msg':message}
+            url = 'http://f.10086.cn/im/user/sendMsgToMyselfs.action'
         else:
             '''发送定时短信。格式：年月日小时分钟
             如：2011年11月20日11时14分：201111201144
@@ -120,10 +120,9 @@ class Fetion:
             如：当前时间：2011年11月20日 11:17
             有效时间范围是:2011年11月20日11:27分到2012年11月20日11:27分
             '''
-            data = urlencode({'msg':message,
-                              'timing':time})
-            req = urllib2.Request('http://f.10086.cn/im/user/sendTimingMsgToMyselfs.action',data)
-        return Returner(self.opener.open(req).read())
+            data = {'msg':message,'timing':time}
+            url = 'http://f.10086.cn/im/user/sendTimingMsgToMyselfs.action'
+        return '成功' in self.open(url,data)
         
     def send(self,mobile,message,sm=False):
         #SM=Short Message,强制发送短信。
@@ -135,18 +134,14 @@ class Fetion:
             return self._send(mobile,message,sm)
     
     def changeimpresa(self,impresa):
-        data = urlencode({'impresa':impresa})
-        req = urllib2.Request('http://f.10086.cn/im/user/editimpresaSubmit.action',data)
         #修改心情后会直接返回主页，所以判断返回的页面中是否存在指定的签名
-        return impresa in self.opener.open(req).read()
+        return impresa in self.open('http://f.10086.cn/im/user/editimpresaSubmit.action',
+                                     {'impresa':impresa})
     
     def addfriend(self,phone,name='xx'):
-        data = urlencode({'nickname':name,
-                          'number':phone,
-                          'type':'0'})
-        req = urllib2.Request('http://f.10086.cn/im/user/insertfriendsubmit.action',data)
-        return Returner(self.opener.open(req).read())
-        
+        return '成功' in self.open('http://f.10086.cn/im/user/insertfriendsubmit.action',
+                                    {'nickname':name,'number':phone,'type':'0'})
+         
     def logout(self):
         #退出飞信，否则可能会影响正常短信收发
         self.opener.open('http://f.10086.cn/im/index/logoutsubmit.action')
@@ -182,14 +177,9 @@ class Fetion:
         self.opener.open(req) 
         
     def _getid(self,mobile):
-        data = urlencode({'searchText':mobile})
-        req = urllib2.Request('http://f.10086.cn/im/index/searchOtherInfoList.action',data)
         #获得HTML页面
-        try:
-            htm = self.opener.open(req).read()
-        except:
-            return False
-            #移动的服务器挂了，认命吧。
+        htm = self.open('http://f.10086.cn/im/index/searchOtherInfoList.action',
+                        {'searchText':mobile})
         
         if not hasattr(self,'idfinder'):
             #如果尚未构建正则表达式对象，则创建
@@ -234,12 +224,23 @@ class Fetion:
             self.namefinder    = compile('<a href="/im/chat/toinputMsg.action\?touserid=\d*&amp;box=true&amp;t=\d*">([^/]*)</a>:')
             self.contentfinder = compile('<a href="/im/chat/toinputMsg.action\?touserid=\d*&amp;box=true&amp;t=\d*">[^/]*</a>:(.*?)<br/>')
         fids = self.fidfinder.findall(web)
-        [self.opener.open(urllib2.Request('http://f.10086.cn/im/box/deleteMessages.action',urlencode({'fromIdUser':x}))) for x in fids]
         return tuple([tuple([fids[i],self.namefinder.findall(web)[i],self.contentfinder.findall(web)[i]]) for i in range(len(fids))])
+    
+    def markread(self,id):
+        self.open('http://f.10086.cn/im/box/deleteMessages.action',
+                  {'fromIdUser':id})
     
     def alive(self):
         #10分钟无操作，则WAP飞信会自动退出
         #用于保持登录状态。若已离线则返回False.
         return '心情' in self.opener.open('http://f.10086.cn/im/index/indexcenter.action').read()
         
-        
+    def open(self,url,data):
+        data = urlencode(data)
+        req = urllib2.Request(url,data)
+        html = self.opener.open(req).read()
+        if '登陆' in html:
+            raise FetionNotLogin
+        elif '对方不是您的好友' in html:
+            raise FetionNotYourFriend
+        return html

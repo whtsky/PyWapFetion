@@ -8,7 +8,6 @@ __license__ = 'MIT'
 
 
 from Fetion import Fetion,Cache,AliveKeeper
-import Error
 
 def send2self(mobile,password,message):
     x = Fetion(mobile,password,keepalive=False)#不用保持状态，减少内存消耗
