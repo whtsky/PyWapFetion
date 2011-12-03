@@ -10,22 +10,18 @@ from Cache import Cache
 class Fetion:
     def __init__(self,mobile,password,status='4',cachefile='Fetion.cache',keepalive=True):
         if cachefile is not None: self.cache = Cache(cachefile)
-        else: self.idfinder = compile('touserid=(\d*)')
-            #在有缓存的情况下，创建对象时不载入正则，提高速度。           
+        else: self.idfinder = compile('touserid=(\d*)')#在有缓存的情况下，创建对象时不载入正则，提高速度。           
             
         self.opener = build_opener(HTTPCookieProcessor(CookieJar()), HTTPHandler)
         self.mobile,self.password,self.status = mobile, password, status
-        
         self._login()
         
         if keepalive:
             from AliveKeeper import AliveKeeper
             self.alivekeeper = AliveKeeper(self.opener)
-                
        
     def logout(self):
-        #退出飞信，否则可能会影响正常短信收发
-        self.open('im/index/logoutsubmit.action')
+        self.open('im/index/logoutsubmit.action')#退出飞信，否则可能会影响正常短信收发
         try:
             self.cache.exit()
             self.alivekeeper.stop()
@@ -33,13 +29,6 @@ class Fetion:
         finally:
             del self.opener,self.mobile,self.password,self.status
 
-    '''发送定时短信。格式：年月日小时分钟
-    如：2011年11月20日11时14分：201111201144
-        2012年11月11日11时11分：201211111111
-    注意：时间允许范围：当前时刻向后10分钟-向后1年
-    如：当前时间：2011年11月20日 11:17
-    有效时间范围是:2011年11月20日11:27分到2012年11月20日11:27分
-    '''
     send2self = lambda self,message,time=None:'成功' in (self.open('im/user/sendMsgToMyselfs.action',{'msg':message}) if time is None else self.open('im/user/sendTimingMsgToMyselfs.action',{'msg':message,'timing':time}))
     send = lambda self,mobile,message,sm=False:tuple([self._send(x,message,sm) for x in mobile]) if type(mobile) != StringType else self._send(mobile,message,sm)
     changeimpresa = lambda self,impresa: impresa in self.open('im/user/editimpresaSubmit.action',{'impresa':impresa})
@@ -51,7 +40,6 @@ class Fetion:
     markread = lambda self,id:' ' in self.open('im/box/deleteMessages.action',{'fromIdUser':id})
     alive = lambda self:'心情' in self.open('im/index/indexcenter.action')
 
-    
     def _getid(self,mobile):
         if not hasattr(self,'idfinder'): self.idfinder = compile('touserid=(\d*)')#如果尚未构建正则表达式对象，则创建
         result = self.idfinder.findall(self.open('im/index/searchOtherInfoList.action',{'searchText':mobile}))       
