@@ -8,9 +8,9 @@ class AliveKeeper(Thread):
         self.on = True
         self.sleeptime = sleeptime
         self.setDaemon(Daemon)
-        if start:
-            self.start()
+        if start: self.start()
             
-    def run(self): while self.on and '登陆' is not in self.Opener.open('http://f.10086.cn/im/index/indexcenter.action').read():sleep(self.sleeptime)
+    def run(self): 
+        while self.on and '登陆' is not in self.Opener.open('http://f.10086.cn/im/index/indexcenter.action').read():sleep(self.sleeptime)
             
     stop = lambda self:self.on = False

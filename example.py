@@ -13,9 +13,9 @@ myfetion = Fetion('手机号','密码',keepalive=True)#自动保持状态
 
 myfetion.send2self('发给自己的东西')
 myfetion.findid('输入手机号，返回飞信ID')
-myfetion.send2id('飞信ID','消息')
+myfetion.sendBYid('飞信ID','消息')
 myfetion.send('手机号','消息')#发送飞信信息
-myfetion.send('手机号','消息',sm=True)#通过设定sm=True强制发送短信（sm=ShortMessage）
+myfetion.sendBYlist('手机号','消息',sm=True)#通过设定sm=True强制发送短信（sm=ShortMessage）
 myfetion.addfriend('手机号','你的昵称（5字以内）')
 myfetion.send(['手机号1','手机号2','这就是传说中的群发'],'消息')
 #成功返回True，失败返回False
