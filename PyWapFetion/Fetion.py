@@ -66,6 +66,5 @@ class Fetion(object):
         html = self.opener.open(Request('http://f.10086.cn/%s' % url,urlencode(data))).read() if data is not None else self.opener.open('http://f.10086.cn/%s' % url).read()
         if '登陆' in html: raise FetionNotLogin
         elif '对方不是您的好友' in html: raise FetionNotYourFriend
-        open('nb.html','w').write(html)
         return html
     
