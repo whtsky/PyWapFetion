@@ -20,9 +20,9 @@ PyWapFetion是一个飞信的Python模块，使用Wap飞信协议。
 
 免费品尝有木有？
 ==========
-GET或者POST数据到`http://lab-whtsky.rhcloud.com/fetion`
+GET或者POST数据到`http://lab-whtsky.rhcloud.com/fetion`  
 数据：  
 ```python
 fid=手机号&password=密码&mobile=接受者手机号&msg=信息
-```
+```  
 直接返回WAP飞信网页（实际使用中会返回True/False的bool,此处为了方便调试。）
