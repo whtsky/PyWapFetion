@@ -34,10 +34,15 @@ class Fetion(object):
     send          = lambda self,mobile,message,sm=False:self.send2self(message) if mobile is self.mobile else self.sendBYid(self.findid(mobile),message,sm)
     _login        = lambda self:'登陆' in self.open('im/login/inputpasssubmit1.action',{'m':self.mobile,'pass':self.password,'loginstatus':self.status}) 
     tweet         = lambda self,content:'成功' in self.open('space/microblog/create.action',{'content':content,'checkCode':'','from':'myspace'})
-    sendBYid      = lambda self,id,message,sm=False: False if id is None else '成功' in self.open(('im/chat/sendMsg.action?touserid='+id if sm else 'im/chat/sendShortMsg.action?touserid='+id),{'msg':message})
     markread      = lambda self,id:' ' in self.open('im/box/deleteMessages.action',{'fromIdUser':id})
     alive         = lambda self:'心情' in self.open('im/index/indexcenter.action')
     __del__       = logout
+
+    def sendBYid(self,id,message,sm=False):
+        htm = self.open(('im/chat/sendMsg.action?touserid='+id if sm else 'im/chat/sendShortMsg.action?touserid='+id),{'msg':message})
+        if '对方不是您的好友' in htm: raise FetionNotYourFriend  
+        return False if id is None else '成功' in htm
+
     
     def _getid(self,mobile):
         if not hasattr(self,'idfinder'): self.idfinder = compile('touserid=(\d*)')#如果尚未构建正则表达式对象，则创建
@@ -64,7 +69,15 @@ class Fetion(object):
         
     def open(self,url,data=None):
         html = self.opener.open(Request('http://f.10086.cn/%s' % url,urlencode(data))).read() if data is not None else self.opener.open('http://f.10086.cn/%s' % url).read()
-        if '登陆' in html: raise FetionNotLogin
-        elif '对方不是您的好友' in html: raise FetionNotYourFriend
+        if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin()
         return html
+        
+    def __getattr__(self,k):
+        if k is 'alive':
+            try:
+                self.open('im/index/index.action')
+            except:
+                return False
+            return True
+        raise AttributeError, k
     
