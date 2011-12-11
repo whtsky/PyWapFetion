@@ -26,6 +26,8 @@ GET或者POST数据到`http://lab-whtsky.rhcloud.com/fetion`
 ```python  
 fid=手机号&password=密码&mobile=接受者手机号&msg=信息
 ```  
+
+***信息正文要使用utf-8编码.***
  
 ***  
 比如：  
