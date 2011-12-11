@@ -28,6 +28,7 @@ from thread import start_new_thread
 def checkmessage(Fetion):
     while True:
         for x,y,z in Fetion.getmessage():
+            printl('')
             printl('%s发来信息：%s' % (y,z))
             Fetion.markread(x)
         
