@@ -26,7 +26,7 @@ GET或者POST数据到`http://lab-whtsky.rhcloud.com/fetion`
 ```python  
 fid=手机号&password=密码&mobile=接受者手机号&msg=信息
 ```  
-直接返回WAP飞信网页（实际使用中会返回True/False的bool,此处为了方便调试。）  
+ 
 ***  
 比如：  
   
