@@ -2,7 +2,6 @@
 from cookielib import CookieJar
 from urllib2 import Request,build_opener,HTTPHandler,HTTPCookieProcessor
 from urllib import urlencode
-from types import StringType
 from Errors import *
 from re import compile
 from Cache import Cache
