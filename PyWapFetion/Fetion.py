@@ -27,16 +27,16 @@ class Fetion(object):
         except:
             pass
 
-    send2self     = lambda self,message,time=None:'成功' in (self.open('im/user/sendMsgToMyselfs.action',{'msg':message}) if time is None else self.open('im/user/sendTimingMsgToMyselfs.action',{'msg':message,'timing':time}))
-    sendBYlist    = lambda self,mobile,message,sm=False:dict([[x,self.send(x,message,sm)] for x in mobile])
+    send2self = lambda self,message,time=None:'成功' in (self.open('im/user/sendMsgToMyselfs.action',{'msg':message}) if time is None else self.open('im/user/sendTimingMsgToMyselfs.action',{'msg':message,'timing':time}))
+    sendBYlist = lambda self,mobile,message,sm=False:dict([[x,self.send(x,message,sm)] for x in mobile])
     changeimpresa = lambda self,impresa: impresa in self.open('im/user/editimpresaSubmit.action',{'impresa':impresa})
-    addfriend     = lambda self,phone,name='xx':'成功' in self.open('im/user/insertfriendsubmit.action',{'nickname':name,'number':phone,'type':'0'})
-    send          = lambda self,mobile,message,sm=False:self.send2self(message) if mobile is self.mobile else self.sendBYid(self.findid(mobile),message,sm)
-    _login        = lambda self:'登陆' in self.open('im/login/inputpasssubmit1.action',{'m':self.mobile,'pass':self.password,'loginstatus':self.status}) 
-    tweet         = lambda self,content:'成功' in self.open('space/microblog/create.action',{'content':content,'checkCode':'','from':'myspace'})
-    markread      = lambda self,id:' ' in self.open('im/box/deleteMessages.action',{'fromIdUser':id})
-    alive         = lambda self:'心情' in self.open('im/index/indexcenter.action')
-    __del__       = logout
+    addfriend = lambda self,phone,name='xx':'成功' in self.open('im/user/insertfriendsubmit.action',{'nickname':name,'number':phone,'type':'0'})
+    send = lambda self,mobile,message,sm=False:self.send2self(message) if mobile is self.mobile else self.sendBYid(self.findid(mobile),message,sm)
+    _login = lambda self:'登陆' in self.open('im/login/inputpasssubmit1.action',{'m':self.mobile,'pass':self.password,'loginstatus':self.status}) 
+    tweet = lambda self,content:'成功' in self.open('space/microblog/create.action',{'content':content,'checkCode':'','from':'myspace'})
+    markread = lambda self,id:' ' in self.open('im/box/deleteMessages.action',{'fromIdUser':id})
+    alive = lambda self:'心情' in self.open('im/index/indexcenter.action')
+    __del__ = logout
 
     def sendBYid(self,id,message,sm=False):
         htm = self.open(('im/chat/sendMsg.action?touserid='+id if sm else 'im/chat/sendShortMsg.action?touserid='+id),{'msg':message})
