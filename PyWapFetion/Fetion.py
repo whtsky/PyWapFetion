@@ -67,8 +67,8 @@ class Fetion(object):
         fids = self.fidfinder.findall(web)
         return tuple([tuple([fids[i],self.namefinder.findall(web)[i],self.contentfinder.findall(web)[i]]) for i in range(len(fids))])
         
-    def open(self,url,data=None):
-        html = self.opener.open(Request('http://f.10086.cn/%s' % url,urlencode(data))).read() if data is not None else self.opener.open('http://f.10086.cn/%s' % url).read()
+    def open(self,url,data=''):
+        html = self.opener.open(Request('http://f.10086.cn/%s' % url,urlencode(data))).read()
         if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin()
         return html
         
