@@ -30,7 +30,7 @@ class Fetion(object):
     sendBYlist = lambda self,mobile,message,sm=False:dict([[x,self.send(x,message,sm)] for x in mobile])
     changeimpresa = lambda self,impresa: impresa in self.open('im/user/editimpresaSubmit.action',{'impresa':impresa})
     addfriend = lambda self,phone,name='xx':'成功' in self.open('im/user/insertfriendsubmit.action',{'nickname':name,'number':phone,'type':'0'})
-    send = lambda self,mobile,message,sm=False:self.send2self(message) if mobile is self.mobile else self.sendBYid(self.findid(mobile),message,sm)
+    send = lambda self,mobile,message,sm=False:self.send2self(message) if mobile == self.mobile else self.sendBYid(self.findid(mobile),message,sm)
     _login = lambda self:'登陆' in self.open('im/login/inputpasssubmit1.action',{'m':self.mobile,'pass':self.password,'loginstatus':self.status}) 
     tweet = lambda self,content:'成功' in self.open('space/microblog/create.action',{'content':content,'checkCode':'','from':'myspace'})
     markread = lambda self,id:' ' in self.open('im/box/deleteMessages.action',{'fromIdUser':id})
@@ -38,7 +38,8 @@ class Fetion(object):
     __del__ = logout
 
     def sendBYid(self,id,message,sm=False):
-        htm = self.open(('im/chat/sendMsg.action?touserid='+id if sm else 'im/chat/sendShortMsg.action?touserid='+id),{'msg':message})
+        url = ('im/chat/sendMsg.action?touserid=%s' % id) if sm else ('im/chat/sendShortMsg.action?touserid=%s '% id)
+        htm = self.open(url,{'msg':message})
         if '对方不是您的好友' in htm: raise FetionNotYourFriend  
         return False if id is None else '成功' in htm
 
