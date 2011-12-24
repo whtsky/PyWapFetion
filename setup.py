@@ -1,12 +1,12 @@
 ﻿#coding=utf-8
-from setuptools import setup,find_packages
+from setuptools import setup
 import PyWapFetion
 
 setup(
 name = PyWapFetion.__name__,
 version = PyWapFetion.__version__,
 
-packages = find_packages(),
+packages = ['PyWapFetion'],
 keywords = 'library mobile fetion',
 author = PyWapFetion.__author__,
 author_email = 'whtsky@vip.qq.com',

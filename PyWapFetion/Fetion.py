@@ -71,13 +71,4 @@ class Fetion(object):
         html = self.opener.open(Request('http://f.10086.cn/%s' % url,urlencode(data))).read()
         if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin()
         return html
-        
-    def __getattr__(self,k):
-        if k is 'alive':
-            try:
-                self.open('im/index/index.action')
-            except:
-                return False
-            return True
-        raise AttributeError, k
-    
+  
