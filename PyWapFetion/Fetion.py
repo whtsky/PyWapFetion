@@ -17,14 +17,7 @@ class Fetion(object):
         
         if keepalive:
             from AliveKeeper import AliveKeeper
-            self.alivekeeper = AliveKeeper(self.opener)
-        
-    def logout(self):
-        self.open('im/index/logoutsubmit.action')#退出飞信，否则可能会影响正常短信收发
-        try:
-            del self.idfinder,self.cache,self.alivekeeper,self.opener,self.mobile,self.password,self.status
-        except:
-            pass
+            self.alivekeeper = AliveKeeper(self)
 
     send2self = lambda self,message,time=None:'成功' in (self.open('im/user/sendMsgToMyselfs.action',{'msg':message}) if time is None else self.open('im/user/sendTimingMsgToMyselfs.action',{'msg':message,'timing':time}))
     sendBYlist = lambda self,mobile,message,sm=False:dict([[x,self.send(x,message,sm)] for x in mobile])
@@ -35,7 +28,7 @@ class Fetion(object):
     tweet = lambda self,content:'成功' in self.open('space/microblog/create.action',{'content':content,'checkCode':'','from':'myspace'})
     markread = lambda self,id:' ' in self.open('im/box/deleteMessages.action',{'fromIdUser':id})
     alive = lambda self:'心情' in self.open('im/index/indexcenter.action')
-    __del__ = logout
+    __del__ = logout = lambda self:self.open('im/index/logoutsubmit.action')
 
     def sendBYid(self,id,message,sm=False):
         url = ('im/chat/sendMsg.action?touserid=%s' % id) if sm else ('im/chat/sendShortMsg.action?touserid=%s '% id)
