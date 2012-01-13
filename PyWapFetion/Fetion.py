@@ -5,11 +5,29 @@ from urllib import urlencode
 from Errors import *
 from re import compile
 from Cache import Cache
+
+msg_re = {
+'fid'     : compile('<a href="/im/chat/toinputMsg.action\?touserid=(\d*)&amp;'),
+'name'    : compile('<a href="/im/chat/toinputMsg.action\?touserid=\d*&amp;box=true&amp;t=\d*">([^/]*)</a>:'),
+'content' : compile('<a href="/im/chat/toinputMsg.action\?touserid=\d*&amp;box=true&amp;t=\d*">[^/]*</a>:(.*?)<br/>'),
+}
+
+info_re = {
+'name'    : compile('姓名:([^\[\t]*)'),#第一个值为好友姓名，第二个为备注姓名
+'fid'     : compile('飞信号:([^<].*)<br/>'),#飞信ID和飞信号不是同一个数字。。
+'phone'   : compile('手机号码:([^<].*)<br/>'),
+'age'     : compile('年龄:([^<].*)<br/>'),
+'sex'     : compile('性别:([^<].*)<br/>'),
+'city'    : compile('城市:([^\[]*)'),
+'sign'    : compile('星座:([^\[]*)'),
+'blood'   : compile('血型:([^\[]*)'),
+'impresa' : compile('心情短语:([^<]*)<br/>'),
+}
             
 class Fetion(object):
     def __init__(self,mobile,password,status='4',cachefile='Fetion.cache',keepalive=False):
-        if cachefile is not None: self.cache = Cache(cachefile)
-        else: self.idfinder = compile('touserid=(\d*)')#在有缓存的情况下，创建对象时不载入正则，提高速度。           
+        if cachefile is not None: 
+            self.cache = Cache(cachefile)        
             
         self.opener = build_opener(HTTPCookieProcessor(CookieJar()), HTTPHandler)
         self.mobile,self.password,self.status = mobile, password, status
@@ -40,7 +58,7 @@ class Fetion(object):
     def _getid(self,mobile):
         if not hasattr(self,'idfinder'): self.idfinder = compile('touserid=(\d*)')#如果尚未构建正则表达式对象，则创建
         result = self.idfinder.findall(self.open('im/index/searchOtherInfoList.action',{'searchText':mobile}))       
-        return (result[0] if len(result) > 0 else None)              
+        return (result[0] if len(result) > 0 else None) 
         
     def findid(self,mobile):
         if hasattr(self,'cache'):
@@ -51,14 +69,28 @@ class Fetion(object):
             return id
         return self._getid(mobile)
     
+    def getuserinfo(self,id):
+        web = self.open('im/user/userinfoByuserid.action?touserid=%s' % id)
+        assert not('对不起,操作失败' in web),'Wrong FID'
+        return {
+            'name'      : info_re['name'].findall(web)[0],
+            'localname' : info_re['name'].findall(web)[1],
+            'fid'       : info_re['fid'].findall(web)[0],
+            'phone'     : info_re['phone'].findall(web)[0],
+            'age'       : info_re['age'].findall(web)[0],
+            'sex'       : info_re['sex'].findall(web)[0],
+            'city'      : info_re['city'].findall(web)[0],
+            'sign'      : info_re['sign'].findall(web)[0],
+            'blood'     : info_re['blood'].findall(web)[0],
+            'impresa'   : info_re['impresa'].findall(web)[0],
+        }
+    
     def getmessage(self):
         web = self.open('im/box/alllist.action')
-        if not hasattr(self,'fidfinder'):
-            self.fidfinder     = compile('<a href="/im/chat/toinputMsg.action\?touserid=(\d*)&amp;')
-            self.namefinder    = compile('<a href="/im/chat/toinputMsg.action\?touserid=\d*&amp;box=true&amp;t=\d*">([^/]*)</a>:')
-            self.contentfinder = compile('<a href="/im/chat/toinputMsg.action\?touserid=\d*&amp;box=true&amp;t=\d*">[^/]*</a>:(.*?)<br/>')
-        fids = self.fidfinder.findall(web)
-        return tuple([tuple([fids[i],self.namefinder.findall(web)[i],self.contentfinder.findall(web)[i]]) for i in range(len(fids))])
+        fids     = msg_re['fid'].findall(web)
+        names    = msg_re['name'].findall(web)
+        contents = msg_re['content'].findall(web)
+        return tuple([tuple([fids[i],names[i],contents[i]]) for i in range(len(fids))])
         
     def open(self,url,data=''):
         html = self.opener.open(Request('http://f.10086.cn/%s' % url,urlencode(data))).read()

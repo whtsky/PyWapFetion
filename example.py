@@ -21,7 +21,21 @@ myfetion.addfriend('手机号','你的昵称（5字以内）')
 myfetion.send(['手机号1','手机号2','这就是传说中的群发'],'消息')
 #成功返回True，失败返回False
 
-myfetion.getmessage()#返回tuple(tuple(飞信号,昵称,内容)) 格式的信息
+myfetion.getmessage()#返回tuple(tuple(飞信ID,昵称,内容)) 格式的信息
+
+info = myfetion.getuserinfo('飞信ID') 
+'''获取好友信息，返回值为一个字典
+'name'      : 姓名,
+'localname' : 备注姓名,
+'fid'       : 飞信号（飞信号不同于飞信ID）,
+'phone'     : 手机号,
+'age'       : 年龄,
+'sex'       : 性别,
+'city'      : 城市,
+'sign'      : 星座,
+'blood'     : 血型,
+'impresa'   : 心情短语,
+'''
 
 myfetion.send2self('这个是发给自己的定时短信',time='201111201120')
 '''发送定时短信。格式：年月日小时分钟
