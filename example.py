@@ -59,6 +59,8 @@ groups=myfetion.getgroups()
 分组名:分组id
 }
 '''
+users=myfetion.getgroupusers('1') #取得分组号为1的分组内所有好友的*飞信ID*。返回一个tuple
+allusers=myfetion.getallusers() #取得所有好友的*飞信ID*。返回一个tuple
 
 myfetion.logout()
 #-----------------------------------------------------------------------

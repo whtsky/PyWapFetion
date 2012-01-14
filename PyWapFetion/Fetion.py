@@ -8,9 +8,9 @@ from Cache import Cache
 
 idfinder = compile('touserid=(\d*)')
 msg_re = {
-'fid'     : compile('<a href="/im/chat/toinputMsg.action\?touserid=(\d*)&amp;'),
-'name'    : compile('<a href="/im/chat/toinputMsg.action\?touserid=\d*&amp;box=true&amp;t=\d*">([^/]*)</a>:'),
-'content' : compile('<a href="/im/chat/toinputMsg.action\?touserid=\d*&amp;box=true&amp;t=\d*">[^/]*</a>:(.*?)<br/>'),
+'id'     : compile('<a href="/im/chat/toinputMsg.action\?touserid=(\d*)&amp;'),
+'name'    : compile('<a href="/im/chat/toinputMsg.action\?touserid=[^"]*">([^/]*)</a>:'),
+'content' : compile('<a href="/im/chat/toinputMsg.action\?touserid=[^"]*">[^/]*</a>:(.*?)<br/>'),
 }
 
 group_re = {
@@ -92,17 +92,32 @@ class Fetion(object):
     
     def getmessage(self):
         web = self.open('im/box/alllist.action')
-        fids     = msg_re['fid'].findall(web)
+        ids     = msg_re['id'].findall(web)
         names    = msg_re['name'].findall(web)
         contents = msg_re['content'].findall(web)
-        return tuple([tuple([fids[i],names[i],contents[i]]) for i in range(len(fids))])
+        return tuple([tuple([ids[i],names[i],contents[i]]) for i in range(len(ids))])
     
     def getgroups(self):
         web = self.open('im/user/userGroupManagement.action')
         names = group_re['name'].findall(web)
         ids   = group_re['id'].findall(web)
         return dict([[names[i],ids[i]] for i in range(len(names))])
-    
+        
+    def getgroupusers(self,groupid):
+        page = 1
+        ids = []
+        while True:
+            web = self.open('im/index/contactlistView.action?idContactList=%s&page=%s' % (groupid,page))
+            ids += msg_re['id'].findall(web)
+            if '下一页' in web: page += 1
+            else: break
+        return tuple(set(ids))
+        
+    def getallusers(self):
+        users = []
+        [users.extend(self.getgroupusers(v)) for k,v in self.getgroups().items()]
+        return tuple(set(users))
+           
     def open(self,url,data=''):
         html = self.opener.open(Request('http://f.10086.cn/%s' % url,urlencode(data))).read()
         if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin()
