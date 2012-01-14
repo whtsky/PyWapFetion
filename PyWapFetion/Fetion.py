@@ -6,6 +6,7 @@ from Errors import *
 from re import compile
 from Cache import Cache
 
+idfinder = compile('touserid=(\d*)')
 msg_re = {
 'fid'     : compile('<a href="/im/chat/toinputMsg.action\?touserid=(\d*)&amp;'),
 'name'    : compile('<a href="/im/chat/toinputMsg.action\?touserid=\d*&amp;box=true&amp;t=\d*">([^/]*)</a>:'),
@@ -46,7 +47,7 @@ class Fetion(object):
     tweet = lambda self,content:'成功' in self.open('space/microblog/create.action',{'content':content,'checkCode':'','from':'myspace'})
     markread = lambda self,id:' ' in self.open('im/box/deleteMessages.action',{'fromIdUser':id})
     alive = lambda self:'心情' in self.open('im/index/indexcenter.action')
-    __del__ = logout = lambda self:self.open('im/index/logoutsubmit.action')
+    __del__ = logout = lambda self:'登录' in self.opener.open('http://f.10086.cn/im/index/logoutsubmit.action').read()
 
     def sendBYid(self,id,message,sm=False):
         url = ('im/chat/sendMsg.action?touserid=%s' % id) if sm else ('im/chat/sendShortMsg.action?touserid=%s '% id)
@@ -56,8 +57,7 @@ class Fetion(object):
 
     
     def _getid(self,mobile):
-        if not hasattr(self,'idfinder'): self.idfinder = compile('touserid=(\d*)')#如果尚未构建正则表达式对象，则创建
-        result = self.idfinder.findall(self.open('im/index/searchOtherInfoList.action',{'searchText':mobile}))       
+        result = idfinder.findall(self.open('im/index/searchOtherInfoList.action',{'searchText':mobile}))       
         return (result[0] if len(result) > 0 else None) 
         
     def findid(self,mobile):
@@ -71,7 +71,7 @@ class Fetion(object):
     
     def getuserinfo(self,id):
         web = self.open('im/user/userinfoByuserid.action?touserid=%s' % id)
-        assert not('对不起,操作失败' in web),'Wrong FID'
+        assert not('对不起,操作失败' in web),'Wrong ID'
         return {
             'name'      : info_re['name'].findall(web)[0],
             'localname' : info_re['name'].findall(web)[1],
