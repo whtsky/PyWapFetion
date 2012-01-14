@@ -52,6 +52,7 @@ class Fetion(object):
     tweet = lambda self,content:'成功' in self.open('space/microblog/create.action',{'content':content,'checkCode':'','from':'myspace'})
     markread = lambda self,id:' ' in self.open('im/box/deleteMessages.action',{'fromIdUser':id})
     alive = lambda self:'心情' in self.open('im/index/indexcenter.action')
+    getallusersinfo = lambda self: dict([[x,self.getuserinfo(x)] for x in self.getallusers()])
     __del__ = logout = lambda self:'退出WAP飞信' in self.opener.open('http://f.10086.cn/im/index/logoutsubmit.action').read()
 
     def sendBYid(self,id,message,sm=False):
@@ -77,6 +78,7 @@ class Fetion(object):
     def getuserinfo(self,id):
         web = self.open('im/user/userinfoByuserid.action?touserid=%s' % id)
         assert not('对不起,操作失败' in web),'Wrong ID'
+        if '对不起,没有找到你要查找的好友.' in web:return None
         return {
             'name'      : info_re['name'].findall(web)[0],
             'localname' : info_re['name'].findall(web)[1],
@@ -89,7 +91,7 @@ class Fetion(object):
             'blood'     : info_re['blood'].findall(web)[0],
             'impresa'   : info_re['impresa'].findall(web)[0],
         }
-    
+            
     def getmessage(self):
         web = self.open('im/box/alllist.action')
         ids     = msg_re['id'].findall(web)

@@ -24,7 +24,7 @@ myfetion.send(['手机号1','手机号2','这就是传说中的群发'],'消息'
 myfetion.getmessage()#返回tuple(tuple(飞信ID,昵称,内容)) 格式的信息
 
 info = myfetion.getuserinfo('飞信ID') 
-'''获取好友信息，返回值为一个字典。格式：
+'''获取好友信息，返回值为一个dict。格式：
 {
 'name'      : 姓名,
 'localname' : 备注姓名,
@@ -37,6 +37,7 @@ info = myfetion.getuserinfo('飞信ID')
 'blood'     : 血型,
 'impresa'   : 心情短语,
 }
+如果无法找到该好友，返回None.
 '''
 
 myfetion.send2self('这个是发给自己的定时短信',time='201111201120')
@@ -61,6 +62,10 @@ groups=myfetion.getgroups()
 '''
 users=myfetion.getgroupusers('1') #取得分组号为1的分组内所有好友的*飞信ID*。返回一个tuple
 allusers=myfetion.getallusers() #取得所有好友的*飞信ID*。返回一个tuple
+allusersinfo=myfetion.getallusersinfo()
+'''取得所有用户信息。返回一个dict，格式：
+飞信ID:用户信息（同样为一个dict，格式参考上方getuserinfo()的返回值）
+'''
 
 myfetion.logout()
 #-----------------------------------------------------------------------
