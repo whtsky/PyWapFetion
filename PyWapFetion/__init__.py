@@ -1,7 +1,7 @@
 ﻿#coding=utf-8
 
 __name__ = 'PyWapFetion'
-__version__ = '0.8'
+__version__ = '0.9'
 __author__ = 'whtsky'
 __website__ = 'http://github.com/whtsky/PyWapFetion'
 __license__ = 'MIT'

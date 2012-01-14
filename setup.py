@@ -28,6 +28,8 @@ Get to https://github.com/whtsky/PyWapFetion for more information.
 * Easy to use
 * You can receive your messages!
 * Throw Exception smartly
+* Get user list and group list easily
+* Get a friend's info easily
 * NO CAPTCHA during using it
 * Supports Python 2.5 - 2.7
 * You can use 2to3 to make it support Python 3
