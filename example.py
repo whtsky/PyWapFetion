@@ -24,7 +24,8 @@ myfetion.send(['手机号1','手机号2','这就是传说中的群发'],'消息'
 myfetion.getmessage()#返回tuple(tuple(飞信ID,昵称,内容)) 格式的信息
 
 info = myfetion.getuserinfo('飞信ID') 
-'''获取好友信息，返回值为一个字典
+'''获取好友信息，返回值为一个字典。格式：
+{
 'name'      : 姓名,
 'localname' : 备注姓名,
 'fid'       : 飞信号（飞信号不同于飞信ID）,
@@ -35,6 +36,7 @@ info = myfetion.getuserinfo('飞信ID')
 'sign'      : 星座,
 'blood'     : 血型,
 'impresa'   : 心情短语,
+}
 '''
 
 myfetion.send2self('这个是发给自己的定时短信',time='201111201120')
@@ -50,6 +52,13 @@ myfetion.changeimpresa('改签名')
 myfetion.tweet('发飞语')
 myfetion.alive()#保持在线，10分钟以上无操作会被判定为离线
 #系统默认保持在线，一般不用手动执行。
+
+groups=myfetion.getgroups()
+'''取得所有好友分组。返回一个dict，格式：
+{
+分组名:分组id
+}
+'''
 
 myfetion.logout()
 #-----------------------------------------------------------------------

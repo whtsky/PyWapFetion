@@ -13,6 +13,11 @@ msg_re = {
 'content' : compile('<a href="/im/chat/toinputMsg.action\?touserid=\d*&amp;box=true&amp;t=\d*">[^/]*</a>:(.*?)<br/>'),
 }
 
+group_re = {
+'name' : compile('\+\|([^<]*?)</a>'),
+'id'   : compile('/im/user/crewManagement.action\?idContactList=(\d*)'),
+}
+
 info_re = {
 'name'    : compile('姓名:([^\[\t]*)'),#第一个值为好友姓名，第二个为备注姓名
 'fid'     : compile('飞信号:([^<].*)<br/>'),#飞信ID和飞信号不是同一个数字。。
@@ -47,7 +52,7 @@ class Fetion(object):
     tweet = lambda self,content:'成功' in self.open('space/microblog/create.action',{'content':content,'checkCode':'','from':'myspace'})
     markread = lambda self,id:' ' in self.open('im/box/deleteMessages.action',{'fromIdUser':id})
     alive = lambda self:'心情' in self.open('im/index/indexcenter.action')
-    __del__ = logout = lambda self:'登录' in self.opener.open('http://f.10086.cn/im/index/logoutsubmit.action').read()
+    __del__ = logout = lambda self:'退出WAP飞信' in self.opener.open('http://f.10086.cn/im/index/logoutsubmit.action').read()
 
     def sendBYid(self,id,message,sm=False):
         url = ('im/chat/sendMsg.action?touserid=%s' % id) if sm else ('im/chat/sendShortMsg.action?touserid=%s '% id)
@@ -91,7 +96,13 @@ class Fetion(object):
         names    = msg_re['name'].findall(web)
         contents = msg_re['content'].findall(web)
         return tuple([tuple([fids[i],names[i],contents[i]]) for i in range(len(fids))])
-        
+    
+    def getgroups(self):
+        web = self.open('im/user/userGroupManagement.action')
+        names = group_re['name'].findall(web)
+        ids   = group_re['id'].findall(web)
+        return dict([[names[i],ids[i]] for i in range(len(names))])
+    
     def open(self,url,data=''):
         html = self.opener.open(Request('http://f.10086.cn/%s' % url,urlencode(data))).read()
         if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin()
