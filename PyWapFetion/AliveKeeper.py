@@ -2,9 +2,9 @@
 from threading import Thread
 from time import sleep
 class AliveKeeper(Thread):
-    def __init__(self,Opener,sleeptime=240,Daemon=True,start=True):#默认每480秒登陆一次
+    def __init__(self,Opener,sleeptime=240,Daemon=True,start=True):
         self.Opener = Opener
-        Thread.__init__(self, name = 'AliveKeeper')
+        Thread.__init__(self)
         self.on = True
         self.sleeptime = sleeptime
         self.setDaemon(Daemon)

@@ -1,4 +1,5 @@
 ﻿#coding=utf-8
+from __future__ import with_statement #在Python2.5中使用with的话需要这么干
 from PyWapFetion import *
 #仅作参考，详细了解请参考源码
 
@@ -69,3 +70,6 @@ allusersinfo=myfetion.getallusersinfo()
 
 myfetion.logout()
 #-----------------------------------------------------------------------
+
+with Fetion('手机号','密码') as f:#其实你也可以用with，这样更方便一点
+    f.send2self('xxxx')

@@ -53,7 +53,7 @@ class Fetion(object):
     markread = lambda self,id:' ' in self.open('im/box/deleteMessages.action',{'fromIdUser':id})
     alive = lambda self:'心情' in self.open('im/index/indexcenter.action')
     getallusersinfo = lambda self: dict([[x,self.getuserinfo(x)] for x in self.getallusers()])
-    __del__ = logout = lambda self:'退出WAP飞信' in self.opener.open('http://f.10086.cn/im/index/logoutsubmit.action').read()
+    __exit__ = __del__ = logout = lambda self,*agrs:'退出WAP飞信' in self.opener.open('http://f.10086.cn/im/index/logoutsubmit.action').read()
 
     def sendBYid(self,id,message,sm=False):
         url = ('im/chat/sendMsg.action?touserid=%s' % id) if sm else ('im/chat/sendShortMsg.action?touserid=%s '% id)
@@ -63,37 +63,34 @@ class Fetion(object):
 
     
     def _getid(self,mobile):
-        result = idfinder.findall(self.open('im/index/searchOtherInfoList.action',{'searchText':mobile}))       
-        return (result[0] if len(result) > 0 else None) 
+        try: return idfinder.findall(self.open('im/index/searchOtherInfoList.action',{'searchText':mobile}))[0]
+        except: return None
         
     def findid(self,mobile):
         if hasattr(self,'cache'):
             id = self.cache[mobile]
-            if id is not None: return id
-            id = self._getid(mobile)#缓存中没有，获取ID并存入。
-            self.cache[mobile] = id
+            if id is None: self.cache[mobile] = id = self._getid(mobile)#缓存中没有，获取ID并存入。
             return id
         return self._getid(mobile)
     
     def getuserinfo(self,id):
         web = self.open('im/user/userinfoByuserid.action?touserid=%s' % id)
-        assert not('对不起,操作失败' in web),'Wrong ID'
-        if '对不起,没有找到你要查找的好友.' in web:return None
-        return {
-            'name'      : info_re['name'].findall(web)[0],
-            'localname' : info_re['name'].findall(web)[1],
-            'fid'       : info_re['fid'].findall(web)[0],
-            'phone'     : info_re['phone'].findall(web)[0],
-            'age'       : info_re['age'].findall(web)[0],
-            'sex'       : info_re['sex'].findall(web)[0],
-            'city'      : info_re['city'].findall(web)[0],
-            'sign'      : info_re['sign'].findall(web)[0],
-            'blood'     : info_re['blood'].findall(web)[0],
-            'impresa'   : info_re['impresa'].findall(web)[0],
-        }
+        try:return {
+                    'name'      : info_re['name'].findall(web)[0],
+                    'localname' : info_re['name'].findall(web)[1],
+                    'fid'       : info_re['fid'].findall(web)[0],
+                    'phone'     : info_re['phone'].findall(web)[0],
+                    'age'       : info_re['age'].findall(web)[0],
+                    'sex'       : info_re['sex'].findall(web)[0],
+                    'city'      : info_re['city'].findall(web)[0],
+                    'sign'      : info_re['sign'].findall(web)[0],
+                    'blood'     : info_re['blood'].findall(web)[0],
+                    'impresa'   : info_re['impresa'].findall(web)[0],
+                    }
+        except:return None
             
     def getmessage(self):
-        web = self.open('im/box/alllist.action')
+        web      = self.open('im/box/alllist.action')
         ids      = msg_re['id'].findall(web)
         names    = msg_re['name'].findall(web)
         contents = msg_re['content'].findall(web)
@@ -124,4 +121,5 @@ class Fetion(object):
         html = self.opener.open(Request('http://f.10086.cn/%s' % url,urlencode(data))).read()
         if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin
         return html
-  
+    
+    def __enter__(self): return self
