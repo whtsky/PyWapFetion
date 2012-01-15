@@ -94,13 +94,13 @@ class Fetion(object):
             
     def getmessage(self):
         web = self.open('im/box/alllist.action')
-        ids     = msg_re['id'].findall(web)
+        ids      = msg_re['id'].findall(web)
         names    = msg_re['name'].findall(web)
         contents = msg_re['content'].findall(web)
         return tuple([tuple([ids[i],names[i],contents[i]]) for i in range(len(ids))])
     
     def getgroups(self):
-        web = self.open('im/user/userGroupManagement.action')
+        web   = self.open('im/user/userGroupManagement.action')
         names = group_re['name'].findall(web)
         ids   = group_re['id'].findall(web)
         return dict([[names[i],ids[i]] for i in range(len(names))])
@@ -122,6 +122,6 @@ class Fetion(object):
            
     def open(self,url,data=''):
         html = self.opener.open(Request('http://f.10086.cn/%s' % url,urlencode(data))).read()
-        if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin()
+        if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin
         return html
   
