@@ -5,6 +5,9 @@ from urllib import urlencode
 from Errors import *
 from re import compile
 from Cache import Cache
+from gzip import GzipFile
+try:from cStringIO import StringIO
+except:from StringIO import StringIO
 
 idfinder = compile('touserid=(\d*)')
 userstatus = compile('<a href="/im/user/userinfoByuserid.action\?touserid=\d*&amp;.*?">.*?</a>\[(.*?)\]')
@@ -121,7 +124,7 @@ class Fetion(object):
         return tuple(set(users))
            
     def open(self,url,data=''):
-        html = self.opener.open(Request('http://f.10086.cn/%s' % url,urlencode(data))).read()
+        html = GzipFile(fileobj=StringIO(self.opener.open(Request('http://f.10086.cn/%s' % url,data=urlencode(data),headers={'Accept-encoding':'gzip'})).read())).read()
         if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin
         return html
     
