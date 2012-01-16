@@ -7,6 +7,7 @@ from re import compile
 from Cache import Cache
 
 idfinder = compile('touserid=(\d*)')
+userstatus = compile('<a href="/im/user/userinfoByuserid.action\?touserid=\d*&amp;.*?">.*?</a>\[(.*?)\]')
 msg_re = {
 'id'     : compile('<a href="/im/chat/toinputMsg.action\?touserid=(\d*)&amp;'),
 'name'    : compile('<a href="/im/chat/toinputMsg.action\?touserid=[^"]*">([^/]*)</a>:'),
@@ -53,6 +54,8 @@ class Fetion(object):
     markread = lambda self,id:' ' in self.open('im/box/deleteMessages.action',{'fromIdUser':id})
     alive = lambda self:'心情' in self.open('im/index/indexcenter.action')
     getallusersinfo = lambda self: dict([[x,self.getuserinfo(x)] for x in self.getallusers()])
+    getallusersstatus = lambda self: dict([[x,self.getuserstatus(x)] for x in self.getallusers()])
+    __enter__ = lambda self:self
     __exit__ = __del__ = logout = lambda self,*agrs:'退出WAP飞信' in self.opener.open('http://f.10086.cn/im/index/logoutsubmit.action').read()
 
     def sendBYid(self,id,message,sm=False):
@@ -122,4 +125,9 @@ class Fetion(object):
         if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin
         return html
     
-    def __enter__(self): return self
+    def getuserstatus(self,id):
+        web = self.open('im/chat/toinputMsg.action?touserid=%s' % id)
+        try:return userstatus.findall(web)[0]
+        except:return '已关闭服务'
+   
+    

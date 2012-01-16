@@ -68,6 +68,9 @@ allusersinfo=myfetion.getallusersinfo()
 飞信ID:用户信息（同样为一个dict，格式参考上方getuserinfo()的返回值）
 '''
 
+status=myfetion.getuserstatus('ID') #返回一个str，内容为当前用户状态
+allstatus=myfetion.getallusersstatus() #返回一个dict，格式{用户ID：用户状态}
+
 myfetion.logout()
 #-----------------------------------------------------------------------
 
