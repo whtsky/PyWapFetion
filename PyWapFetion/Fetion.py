@@ -50,11 +50,14 @@ class Fetion(object):
     alive = lambda self:'心情' in self.open('im/index/indexcenter.action')
     getallusersinfo = lambda self: dict([[x,self.getuserinfo(x)] for x in self.getallusers()])
     getallusersstatus = lambda self: dict([[x,self.getuserstatus(x)] for x in self.getallusers()])
+    deletefriend = lambda self,id: '删除好友成功!' in self.open('im/user/deletefriendsubmit.action?touserid=%s' % id)
+    addblacklist = lambda self,id: '加入黑名单成功!' in self.open('im/user/Addblacklist.action?touserid=%s' % id)
+    relieveblack = lambda self,id: '对不起,操作失败,请重新访问此页面' in self.open('im/blackmanage/relieveBlack.action?touserid=%s' % id)#我也不知道为什么操作成功它提示这个。。
     __enter__ = lambda self:self
     __exit__ = __del__ = logout = lambda self,*agrs:'退出WAP飞信' in self.opener.open('http://f.10086.cn/im/index/logoutsubmit.action').read()
 
     def sendBYid(self,id,message,sm=False):
-        url = ('im/chat/sendMsg.action?touserid=%s' % id) if sm else ('im/chat/sendShortMsg.action?touserid=%s '% id)
+        url = ('im/chat/sendMsg.action?touserid=%s' % id) if sm else ('im/chat/sendShortMsg.action?touserid=%s' % id)
         htm = self.open(url,{'msg':message})
         if '对方不是您的好友' in htm: raise FetionNotYourFriend  
         return False if id is None else '成功' in htm

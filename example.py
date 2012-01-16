@@ -72,6 +72,10 @@ allusersinfo=myfetion.getallusersinfo()
 status=myfetion.getuserstatus('ID') #返回一个str，内容为当前用户状态
 allstatus=myfetion.getallusersstatus() #返回一个dict，格式{用户ID：用户状态}
 
+myfetion.deletefriend('要删除的好友ID')
+myfetion.addblacklist('要拉黑的好友ID')
+myfetion.relieveblack('要解除拉黑的好友ID')
+
 myfetion.logout()
 #-----------------------------------------------------------------------
 
