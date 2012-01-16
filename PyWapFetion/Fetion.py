@@ -11,27 +11,19 @@ except:from StringIO import StringIO
 
 idfinder = compile('touserid=(\d*)')
 userstatus = compile('<a href="/im/user/userinfoByuserid.action\?touserid=\d*&amp;.*?">.*?</a>\[(.*?)\]')
+infofinder = compile('<dd>(.*?)</dd>')
+avatarfinder = compile('<div class="mybox_info_pic"><a href="#"><img src="(.*?)"')
+namefinder = compile('<div class="mybox_info_text"><span>(.*?)</span>')
+
 msg_re = {
 'id'     : compile('<a href="/im/chat/toinputMsg.action\?touserid=(\d*)&amp;'),
 'name'    : compile('<a href="/im/chat/toinputMsg.action\?touserid=[^"]*">([^/]*)</a>:'),
 'content' : compile('<a href="/im/chat/toinputMsg.action\?touserid=[^"]*">[^/]*</a>:(.*?)<br/>'),
 }
-
+    
 group_re = {
 'name' : compile('\+\|([^<]*?)</a>'),
 'id'   : compile('/im/user/crewManagement.action\?idContactList=(\d*)'),
-}
-
-info_re = {
-'name'    : compile('姓名:([^\[\t]*)'),#第一个值为好友姓名，第二个为备注姓名
-'fid'     : compile('飞信号:([^<].*)<br/>'),#飞信ID和飞信号不是同一个数字。。
-'phone'   : compile('手机号码:([^<].*)<br/>'),
-'age'     : compile('年龄:([^<].*)<br/>'),
-'sex'     : compile('性别:([^<].*)<br/>'),
-'city'    : compile('城市:([^\[]*)'),
-'sign'    : compile('星座:([^\[]*)'),
-'blood'   : compile('血型:([^\[]*)'),
-'impresa' : compile('心情短语:([^<]*)<br/>'),
 }
             
 class Fetion(object):
@@ -67,7 +59,6 @@ class Fetion(object):
         if '对方不是您的好友' in htm: raise FetionNotYourFriend  
         return False if id is None else '成功' in htm
 
-    
     def _getid(self,mobile):
         try: return idfinder.findall(self.open('im/index/searchOtherInfoList.action',{'searchText':mobile}))[0]
         except: return None
@@ -80,18 +71,23 @@ class Fetion(object):
         return self._getid(mobile)
     
     def getuserinfo(self,id):
-        web = self.open('im/user/userinfoByuserid.action?touserid=%s' % id)
+        url = 'im5/user/userInfo.action?touserid=%s' % id
+        web = [self.open(url) for x in range(2)][1].replace('\n','').replace('\t','').replace('\r','')#不知道为什么，HTML5版的WAP飞信第一次访问总是提示正在加载。。
+        infos = infofinder.findall(web)
+        avatar = avatarfinder.findall(web)[0]
+        if avatar.startswith('/im5'):avatar = 'http://f.10086.cn/' + avatar
         try:return {
-                    'name'      : info_re['name'].findall(web)[0],
-                    'localname' : info_re['name'].findall(web)[1],
-                    'fid'       : info_re['fid'].findall(web)[0],
-                    'phone'     : info_re['phone'].findall(web)[0],
-                    'age'       : info_re['age'].findall(web)[0],
-                    'sex'       : info_re['sex'].findall(web)[0],
-                    'city'      : info_re['city'].findall(web)[0],
-                    'sign'      : info_re['sign'].findall(web)[0],
-                    'blood'     : info_re['blood'].findall(web)[0],
-                    'impresa'   : info_re['impresa'].findall(web)[0],
+                    'avatar'    : avatar,
+                    'name'      : namefinder.findall(web)[0],
+                    'localname' : infos[1],
+                    'fid'       : infos[7],
+                    'phone'     : infos[8],
+                    'sex'       : infos[2],
+                    'birthday'  : infos[3],
+                    'city'      : infos[5],
+                    'sign'      : infos[4],
+                    'blood'     : infos[6],
+                    'impresa'   : infos[0],
                     }
         except:return None
             

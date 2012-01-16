@@ -27,11 +27,12 @@ myfetion.getmessage()#返回tuple(tuple(飞信ID,昵称,内容)) 格式的信息
 info = myfetion.getuserinfo('飞信ID') 
 '''获取好友信息，返回值为一个dict。格式：
 {
+'avatar'    : 头像图片的网址,
 'name'      : 姓名,
 'localname' : 备注姓名,
 'fid'       : 飞信号（飞信号不同于飞信ID）,
 'phone'     : 手机号,
-'age'       : 年龄,
+'birthday'  : 生日,
 'sex'       : 性别,
 'city'      : 城市,
 'sign'      : 星座,
