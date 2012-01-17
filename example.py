@@ -12,6 +12,8 @@ myfetion = Fetion('手机号','密码')
 
 myfetion = Fetion('手机号','密码',keepalive=True)#自动保持状态
 
+myfetion.changestatus('0')#改变在线状态
+
 myfetion.send2self('发给自己的东西')
 myfetion.findid('输入手机号，返回飞信ID')
 myfetion.sendBYid('飞信ID','消息')

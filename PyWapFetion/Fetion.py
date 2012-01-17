@@ -28,6 +28,9 @@ group_re = {
             
 class Fetion(object):
     def __init__(self,mobile,password,status='4',cachefile='Fetion.cache',keepalive=False):
+        '''登录状态：
+        在线：1；隐身：4；忙碌：2；离开：3
+        '''
         if cachefile is not None: 
             self.cache = Cache(cachefile)        
             
@@ -53,6 +56,8 @@ class Fetion(object):
     deletefriend = lambda self,id: '删除好友成功!' in self.open('im/user/deletefriendsubmit.action?touserid=%s' % id)
     addblacklist = lambda self,id: '加入黑名单成功!' in self.open('im/user/Addblacklist.action?touserid=%s' % id)
     relieveblack = lambda self,id: '对不起,操作失败,请重新访问此页面' in self.open('im/blackmanage/relieveBlack.action?touserid=%s' % id)#我也不知道为什么操作成功它提示这个。。
+    changestatus = lambda self,status='0': 'success' in [self.open('im5/index/setLoginStatus.action?loginstatus='+status) for x in range(2)][1]
+    #状态：在线：400 隐身：0 忙碌：600 离开：100
     __enter__ = lambda self:self
     __exit__ = __del__ = logout = lambda self,*agrs:'退出WAP飞信' in self.opener.open('http://f.10086.cn/im/index/logoutsubmit.action').read()
 
@@ -123,7 +128,8 @@ class Fetion(object):
         return tuple(set(users))
            
     def open(self,url,data=''):
-        html = GzipFile(fileobj=StringIO(self.opener.open(Request('http://f.10086.cn/%s' % url,data=urlencode(data),headers={'Accept-encoding':'gzip'})).read())).read()
+        try: html = GzipFile(fileobj=StringIO(self.opener.open(Request('http://f.10086.cn/%s' % url,data=urlencode(data),headers={'Accept-encoding':'gzip'})).read())).read()
+        except: html = self.opener.open(Request('http://f.10086.cn/%s' % url,data=urlencode(data))).read()
         if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin
         return html
     
