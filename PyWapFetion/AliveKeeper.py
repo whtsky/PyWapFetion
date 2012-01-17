@@ -2,15 +2,13 @@
 from threading import Thread
 from time import sleep
 class AliveKeeper(Thread):
-    def __init__(self,Opener,sleeptime=240,Daemon=True,start=True):
-        self.Opener = Opener
+    def __init__(self,fetion,sleeptime=240,Daemon=True,start=True):
+        self.fetion = fetion
         Thread.__init__(self)
-        self.on = True
         self.sleeptime = sleeptime
         self.setDaemon(Daemon)
         if start: self.start()
             
     def run(self):
-        while self.on and '登陆' is not in self.Opener.open('http://f.10086.cn/im/index/indexcenter.action').read():sleep(self.sleeptime)
+        while '登陆' not in self.fetion.open('im/index/indexcenter.action'):sleep(self.sleeptime)
             
-    stop = lambda self:self.on = False
