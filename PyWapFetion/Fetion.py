@@ -23,7 +23,7 @@ msg_re = {
     
 group_re = {
 'name' : compile('\+\|([^<]*?)</a>'),
-'id'   : compile('/imt/user/crewManagement.action\?idContactList=(\d*)'),
+'id'   : compile('/im/user/crewManagement.action\?idContactList=(\d*)'),
 }
 
 __all__ = ['Fetion']
