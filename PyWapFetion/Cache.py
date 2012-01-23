@@ -1,6 +1,9 @@
 ﻿#coding=utf-8
 from __future__ import with_statement
 from marshal import dump,load
+
+__all__ = ['Cache']
+
 class Cache(object):
     def __init__(self,path):
         self.path = path
