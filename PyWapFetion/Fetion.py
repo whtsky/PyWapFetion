@@ -23,8 +23,10 @@ msg_re = {
     
 group_re = {
 'name' : compile('\+\|([^<]*?)</a>'),
-'id'   : compile('/im/user/crewManagement.action\?idContactList=(\d*)'),
+'id'   : compile('/imt/user/crewManagement.action\?idContactList=(\d*)'),
 }
+
+__all__ = ['Fetion']
             
 class Fetion(object):
     def __init__(self,mobile,password,status='4',cachefile='Fetion.cache',keepalive=False):
