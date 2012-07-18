@@ -156,7 +156,6 @@ class Fetion(object):
             return self.csrf
         url = ('im/chat/toinputMsg.action?touserid=%s&type=all' % id)
         htm = self.open(url)
-        #print htm
         try:
             self.csrf = csrf_token.findall(htm)[0]
             return self.csrf
