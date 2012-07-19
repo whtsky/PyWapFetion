@@ -15,6 +15,7 @@ userstatus = compile('<a href="/im/user/userinfoByuserid.action\?touserid=\d*&am
 infofinder = compile('<dd>(.*?)</dd>')
 avatarfinder = compile('<div class="mybox_info_pic"><a href="#"><img src="(.*?)"')
 namefinder = compile('<div class="mybox_info_text"><span>(.*?)</span>')
+csrf_token = compile('<postfield name="csrfToken" value="(\w+)"/>')
 
 msg_re = {
 'id'     : compile('<a href="/im/chat/toinputMsg.action\?touserid=(\d*)&amp;'),
@@ -39,6 +40,7 @@ class Fetion(object):
             
         self.opener = build_opener(HTTPCookieProcessor(CookieJar()), HTTPHandler)
         self.mobile,self.password,self.status = mobile, password, status
+        self.csrf = None
         self._login()
         
         if keepalive:
@@ -66,7 +68,7 @@ class Fetion(object):
 
     def sendBYid(self,id,message,sm=False):
         url = ('im/chat/sendMsg.action?touserid=%s' % id) if sm else ('im/chat/sendShortMsg.action?touserid=%s' % id)
-        htm = self.open(url,{'msg':message})
+        htm = self.open(url,{'msg':message,'csrfToken':self._getcsrf(id)})      
         if '对方不是您的好友' in htm: raise FetionNotYourFriend  
         return False if id is None else '成功' in htm
 
@@ -149,3 +151,13 @@ class Fetion(object):
         except:return '已关闭服务'
    
     
+    def _getcsrf(self,id=''):    
+        if self.csrf is not None:
+            return self.csrf
+        url = ('im/chat/toinputMsg.action?touserid=%s&type=all' % id)
+        htm = self.open(url)
+        try:
+            self.csrf = csrf_token.findall(htm)[0]
+            return self.csrf
+        except IndexError:            
+            raise FetionCsrfTokenFail         
