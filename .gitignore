@@ -7,3 +7,6 @@ dist/
 *.zip
 *.tar
 *.tar.gz
+
+#OS X
+.DS_Store

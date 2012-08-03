@@ -2,6 +2,7 @@
 from cookielib import CookieJar
 from urllib2 import Request,build_opener,HTTPHandler,HTTPCookieProcessor
 from urllib import urlencode
+import base64
 from Errors import *
 from re import compile
 from Cache import Cache
@@ -16,6 +17,7 @@ infofinder = compile('<dd>(.*?)</dd>')
 avatarfinder = compile('<div class="mybox_info_pic"><a href="#"><img src="(.*?)"')
 namefinder = compile('<div class="mybox_info_text"><span>(.*?)</span>')
 csrf_token = compile('<postfield name="csrfToken" value="(\w+)"/>')
+codekey = compile('name="codekey" value="(.*?)">')
 
 msg_re = {
 'id'     : compile('<a href="/im/chat/toinputMsg.action\?touserid=(\d*)&amp;'),
@@ -31,17 +33,18 @@ group_re = {
 __all__ = ['Fetion']
             
 class Fetion(object):
-    def __init__(self,mobile,password,status='4',cachefile='Fetion.cache',keepalive=False):
+    def __init__(self,mobile,password,status='0',cachefile='Fetion.cache',keepalive=False):
         '''登录状态：
-        在线：1；隐身：4；忙碌：2；离开：3
+        在线：400 隐身：0 忙碌：600 离开：100
         '''
         if cachefile is not None: 
             self.cache = Cache(cachefile)        
             
         self.opener = build_opener(HTTPCookieProcessor(CookieJar()), HTTPHandler)
-        self.mobile,self.password,self.status = mobile, password, status
+        self.mobile,self.password = mobile, password
         self.csrf = None
         self._login()
+        self.changestatus(status)
         
         if keepalive:
             from AliveKeeper import AliveKeeper
@@ -52,7 +55,6 @@ class Fetion(object):
     changeimpresa = lambda self,impresa: impresa in self.open('im/user/editimpresaSubmit.action',{'impresa':impresa})
     addfriend = lambda self,phone,name='xx':'成功' in self.open('im/user/insertfriendsubmit.action',{'nickname':name,'number':phone,'type':'0'})
     send = lambda self,mobile,message,sm=False:self.send2self(message) if mobile == self.mobile else self.sendBYid(self.findid(mobile),message,sm)
-    _login = lambda self:'登陆' in self.open('im/login/inputpasssubmit1.action',{'m':self.mobile,'pass':self.password,'loginstatus':self.status}) 
     tweet = lambda self,content:'成功' in self.open('space/microblog/create.action',{'content':content,'checkCode':'','from':'myspace'})
     markread = lambda self,id:' ' in self.open('im/box/deleteMessages.action',{'fromIdUser':id})
     alive = lambda self:'心情' in self.open('im/index/indexcenter.action')
@@ -65,6 +67,18 @@ class Fetion(object):
     #状态：在线：400 隐身：0 忙碌：600 离开：100
     __enter__ = lambda self:self
     __exit__ = __del__ = logout = lambda self,*agrs:'退出WAP飞信' in self.opener.open('http://f.10086.cn/im/index/logoutsubmit.action').read()
+    
+    def _login(self):
+        page = self.open('/im5/login/loginHtml5.action')
+        captcha = codekey.findall(page)[0]
+        data = {
+            'm': self.mobile,
+            'pass': self.password,
+            'checkCode': base64.b64decode(captcha),
+            'codekey': captcha,
+        }
+        return '登录' in self.open('/im5/login/loginHtml5.action', data) 
+
 
     def sendBYid(self,id,message,sm=False):
         url = ('im/chat/sendMsg.action?touserid=%s' % id) if sm else ('im/chat/sendShortMsg.action?touserid=%s' % id)
@@ -142,7 +156,7 @@ class Fetion(object):
     def open(self,url,data=''):
         try: html = GzipFile(fileobj=StringIO(self.opener.open(Request('http://f.10086.cn/%s' % url,data=urlencode(data),headers={'Accept-encoding':'gzip'})).read())).read()
         except: html = self.opener.open(Request('http://f.10086.cn/%s' % url,data=urlencode(data))).read()
-        if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin
+#        if '登录' in html and '您正在登录中国移动WAP飞信' not in html: raise FetionNotLogin
         return html
     
     def getuserstatus(self,id):
