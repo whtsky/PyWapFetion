@@ -41,6 +41,7 @@ class Fetion(object):
         else:
             htm = self.open('im/user/sendMsgToMyselfs.action',
                 {'msg': message})
+        print htm
         return '成功' in htm
 
     def send(self, mobile, message, sm=False):
@@ -81,8 +82,9 @@ class Fetion(object):
             'checkCode': base64.b64decode(captcha),
             'codekey': captcha,
         }
-        return '登录' in self.open('/im5/login/loginHtml5.action', data)
-
+        htm = self.open('/im5/login/loginHtml5.action', data)
+        self.alive()
+        return '登录' in htm
     def sendBYid(self, id, message, sm=False):
         url = 'im/chat/sendShortMsg.action?touserid=%s' % id
         if sm:
@@ -94,13 +96,13 @@ class Fetion(object):
         return '成功' in htm
 
     def _getid(self, mobile):
-        html = self.open('im/index/searchOtherInfoList.action',
+        htm = self.open('im/index/searchOtherInfoList.action',
             {'searchText': mobile})
         try:
-            return idfinder.findall(html)[0]
+            return idfinder.findall(htm)[0]
         except IndexError:
             try:
-                return idfinder2.findall(html)[0]
+                return idfinder2.findall(htm)[0]
             except:
                 return None
         except:
