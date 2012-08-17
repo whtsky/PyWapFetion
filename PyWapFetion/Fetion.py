@@ -41,7 +41,6 @@ class Fetion(object):
         else:
             htm = self.open('im/user/sendMsgToMyselfs.action',
                 {'msg': message})
-        print htm
         return '成功' in htm
 
     def send(self, mobile, message, sm=False):
