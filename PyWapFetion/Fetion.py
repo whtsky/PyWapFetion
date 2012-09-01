@@ -1,5 +1,5 @@
 #coding=utf-8
-from cookielib import CookieJar
+from cookielib import CookieJar as _CookieJar
 from urllib2 import Request, build_opener, HTTPHandler, HTTPCookieProcessor
 from urllib import urlencode
 import base64
@@ -19,6 +19,18 @@ csrf_token = compile('<postfield name="csrfToken" value="(\w+)"/>')
 codekey = compile('<img src="/im5/systemimage/verifycode(.*?).jpeg" alt="f" />')
 
 __all__ = ['Fetion']
+
+
+class CookieJar(_CookieJar):
+    """http://stackoverflow.com/questions/1023224/how-to-pickle-a-cookiejar"""
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['_cookies_lock']
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self._cookies_lock = threading.RLock()
 
 
 class Fetion(object):
