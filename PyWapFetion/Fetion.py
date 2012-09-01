@@ -7,6 +7,7 @@ from Errors import *
 from re import compile
 from Cache import Cache
 from gzip import GzipFile
+from pickle import dump, load
 try:
     from cStringIO import StringIO
 except:
@@ -15,23 +16,35 @@ except:
 idfinder = compile('touserid=(\d*)')
 idfinder2 = compile('name="internalid" value="(\d+)"')
 csrf_token = compile('<postfield name="csrfToken" value="(\w+)"/>')
-codekey = compile('name="codekey" value="(.*?)">')
+codekey = compile('<img src="/im5/systemimage/verifycode(.*?).jpeg" alt="f" />')
 
 __all__ = ['Fetion']
 
 
 class Fetion(object):
-    def __init__(self, mobile, password, status='0', cachefile='Fetion.cache'):
+    def __init__(self, mobile, password=None, status='0',
+        cachefile='Fetion.cache', cookiesfile=''):
         '''登录状态：
         在线：400 隐身：0 忙碌：600 离开：100
         '''
-        if cachefile is not None:
+        if cachefile:
             self.cache = Cache(cachefile)
 
-        self.opener = build_opener(HTTPCookieProcessor(CookieJar()),
+        if not cookiesfile:
+            cookiesfile = '%s.cookies' % mobile
+            
+        try:
+            with open(cookiesfile, 'rb') as f:
+                cookie_processor = load(f)
+        except:
+            cookie_processor = HTTPCookieProcessor(CookieJar())
+                        
+        self.opener = build_opener(cookie_processor,
             HTTPHandler)
         self.mobile, self.password = mobile, password
-        self._login()
+        if not self.alive():
+            self._login()
+        dump(cookie_processor, open(cookiesfile, 'wb'))
         self.changestatus(status)
 
     def send2self(self, message, time=None):
@@ -73,17 +86,22 @@ class Fetion(object):
     __exit__ = __del__ = logout
 
     def _login(self):
-        page = self.open('/im5/login/loginHtml5.action')
-        captcha = codekey.findall(page)[0]
+        htm = ''
         data = {
             'm': self.mobile,
             'pass': self.password,
-            'checkCode': base64.b64decode(captcha),
-            'codekey': captcha,
         }
-        htm = self.open('/im5/login/loginHtml5.action', data)
+        while '图形验证码错误' in htm or not htm:
+            page = self.open('/im5/login/loginHtml5.action')
+            captcha = codekey.findall(page)[0]
+            img = self.open('/im5/systemimage/verifycode%s.jpeg' % captcha)
+            open('verifycode.jpeg', 'w').write(img)
+            captchacode = raw_input('captchaCode:')
+            data['captchaCode'] = captchacode
+            htm = self.open('/im5/login/loginHtml5.action', data)
         self.alive()
         return '登录' in htm
+
     def sendBYid(self, id, message, sm=False):
         url = 'im/chat/sendShortMsg.action?touserid=%s' % id
         if sm:
