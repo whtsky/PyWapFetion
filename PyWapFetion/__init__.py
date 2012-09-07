@@ -2,7 +2,7 @@
 from __future__ import with_statement
 
 __name__ = 'PyWapFetion'
-__version__ = '0.9.2'
+__version__ = '0.9.3'
 __author__ = 'whtsky'
 __website__ = 'http://github.com/whtsky/PyWapFetion'
 __license__ = 'MIT'
