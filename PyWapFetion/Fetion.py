@@ -1,13 +1,13 @@
 #coding=utf-8
-from cookielib import CookieJar as _CookieJar
+from cookielib import MozillaCookieJar
 from urllib2 import Request, build_opener, HTTPHandler, HTTPCookieProcessor
 from urllib import urlencode
 import base64
+import os
 from Errors import *
 from re import compile
 from Cache import Cache
 from gzip import GzipFile
-from pickle import dump, load
 try:
     from cStringIO import StringIO
 except:
@@ -16,21 +16,9 @@ except:
 idfinder = compile('touserid=(\d*)')
 idfinder2 = compile('name="internalid" value="(\d+)"')
 csrf_token = compile('<postfield name="csrfToken" value="(\w+)"/>')
-codekey = compile('<img src="/im5/systemimage/verifycode(.*?).jpeg" alt="f" />')
+codekey = compile('<img src="/im5/systemimage/verifycode(.*?).jpeg"')
 
 __all__ = ['Fetion']
-
-
-class CookieJar(_CookieJar):
-    """http://stackoverflow.com/questions/1023224/how-to-pickle-a-cookiejar"""
-    def __getstate__(self):
-        state = self.__dict__.copy()
-        del state['_cookies_lock']
-        return state
-
-    def __setstate__(self, state):
-        self.__dict__ = state
-        self._cookies_lock = threading.RLock()
 
 
 class Fetion(object):
@@ -44,19 +32,22 @@ class Fetion(object):
 
         if not cookiesfile:
             cookiesfile = '%s.cookies' % mobile
-            
-        try:
-            with open(cookiesfile, 'rb') as f:
-                cookie_processor = load(f)
-        except:
-            cookie_processor = HTTPCookieProcessor(CookieJar())
-                        
+
+        cookiejar = MozillaCookieJar(filename=cookiesfile)
+        if not os.path.isfile(cookiesfile):
+            open(cookiesfile, 'w').write(MozillaCookieJar.header)
+
+        cookiejar.load(filename=cookiesfile)
+
+        cookie_processor = HTTPCookieProcessor(cookiejar)
+
         self.opener = build_opener(cookie_processor,
             HTTPHandler)
         self.mobile, self.password = mobile, password
         if not self.alive():
             self._login()
-        dump(cookie_processor, open(cookiesfile, 'wb'))
+            cookiejar.save()
+
         self.changestatus(status)
 
     def send2self(self, message, time=None):
@@ -79,7 +70,8 @@ class Fetion(object):
         return '成功' in htm
 
     def alive(self):
-        return '心情' in self.open('im/index/indexcenter.action')
+        htm = self.open('im/index/indexcenter.action')
+        return '心情' in htm or '正在登陆' in htm
 
     def deletefriend(self, id):
         htm = self.open('im/user/deletefriendsubmit.action?touserid=%s' % id)
