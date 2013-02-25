@@ -97,11 +97,13 @@ class Fetion(object):
         }
         while '图形验证码错误' in htm or not htm:
             page = self.open('/im5/login/loginHtml5.action')
-            captcha = codekey.findall(page)[0]
-            img = self.open('/im5/systemimage/verifycode%s.jpeg' % captcha)
-            open('verifycode.jpeg', 'wb').write(img)
-            captchacode = raw_input('captchaCode:')
-            data['captchaCode'] = captchacode
+            matches = codekey.findall(page)
+            if matches:
+                captcha = matches[0]
+                img = self.open('/im5/systemimage/verifycode%s.jpeg' % captcha)
+                open('verifycode.jpeg', 'wb').write(img)
+                captchacode = raw_input('captchaCode:')
+                data['captchaCode'] = captchacode
             htm = self.open('/im5/login/loginHtml5.action', data)
         self.alive()
         return '登录' in htm
