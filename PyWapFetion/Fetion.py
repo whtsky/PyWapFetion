@@ -66,7 +66,7 @@ class Fetion(object):
 
     def addfriend(self, mobile, name='xx'):
         htm = self.open('im/user/insertfriendsubmit.action',
-            {'nickname': name, 'number': phone, 'type': '0'})
+            {'nickname': name, 'number': mobile, 'type': '0'})
         return '成功' in htm
 
     def alive(self):
