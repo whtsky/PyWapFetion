@@ -1,6 +1,8 @@
 PyWapFeion  
 ==========
 
+**[由于种种原因](http://whouz.com/PyWapFetion-已经停止维护了/)， PyWapFetion 已经不再被维护了；希望接手此项目的人请与我（ whtsky#gmail ）联系，谢谢**
+
 PyWapFetion是一个飞信的Python模块，使用Wap飞信协议。  
 因为目前没有看到比较好的Python飞信模块（PyFetion虽然很强大，但是基于电脑客户端的协议，容易被各种验证码问题所困扰），所以自己动手写了一个。
 
