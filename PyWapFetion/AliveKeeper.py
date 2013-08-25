@@ -8,7 +8,7 @@ __all__ = ['AliveKeeper']
 class AliveKeeper(Thread):
     def __init__(self, fetion, sleeptime=240, Daemon=True, start=True):
         self.fetion = fetion
-        Thread.__init__(self)
+        super(Thread, self).__init__()
         self.sleeptime = sleeptime
         self.setDaemon(Daemon)
         if start:
