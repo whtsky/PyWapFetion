@@ -1,6 +1,9 @@
 ﻿#coding=utf-8
+import os
 from setuptools import setup
 import PyWapFetion
+
+readme = os.path.join(os.path.dirname(__file__), "README.md")
 
 setup(
     name=PyWapFetion.__name__,
@@ -12,7 +15,7 @@ setup(
 
     url=PyWapFetion.__website__,
     description='A simple python lib for WapFetion',
-    long_description=open("README.md").read(),
+    long_description=open(readme, encoding='utf8').read(),
     license=PyWapFetion.__license__,
     classifiers=[
         'Development Status :: 4 - Beta',
