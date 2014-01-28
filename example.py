@@ -1,4 +1,4 @@
-  # coding=utf-8
+#coding=utf-8
 from __future__ import with_statement
 from PyWapFetion import Fetion, send2self, send
 #仅作参考，详细了解请参考源码
@@ -44,7 +44,7 @@ myfetion.addblacklist('要拉黑的好友ID')
 myfetion.relieveblack('要解除拉黑的好友ID')
 
 myfetion.logout()
-  # -----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 with Fetion('手机号', '密码') as f:  # 其实你也可以用with，这样更方便一点
     f.send2self('xxxx')
