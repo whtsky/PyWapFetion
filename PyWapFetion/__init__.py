@@ -1,5 +1,5 @@
 #coding=utf-8
-from __future__ import with_statement
+from __future__ import absolute_import
 
 __name__ = 'PyWapFetion'
 __version__ = '0.9.4'
@@ -7,7 +7,7 @@ __author__ = 'whtsky'
 __website__ = 'http://github.com/whtsky/PyWapFetion'
 __license__ = 'MIT'
 
-from Fetion import Fetion
+from PyWapFetion.Fetion import Fetion
 
 
 def send2self(mobile, password, message):
