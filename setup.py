@@ -1,5 +1,7 @@
-﻿#coding=utf-8
+#coding=utf-8
+
 import os
+
 from setuptools import setup
 import PyWapFetion
 
@@ -38,4 +40,3 @@ setup(
     ],
     zip_safe=False,
 )
-

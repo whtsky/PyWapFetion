@@ -1,10 +1,5 @@
 #coding=utf-8
 
-try:
-    input = raw_input
-except:
-    pass
-
 import os
 from PyWapFetion.Errors import *
 from re import compile
@@ -13,18 +8,24 @@ from gzip import GzipFile
 
 try:
     from http.cookiejar import MozillaCookieJar
-    from urllib.request import Request, build_opener, HTTPHandler, HTTPCookieProcessor
+    from urllib.request import Request, build_opener
+    from urllib.request import HTTPHandler, HTTPCookieProcessor
     from urllib.parse import urlencode
     from io import StringIO
-except:
+except ImportError:
+    # Python 2
+    input = raw_input
     from cookielib import MozillaCookieJar
     from urllib2 import Request, build_opener, HTTPHandler, HTTPCookieProcessor
     from urllib import urlencode
 
     try:
         from cStringIO import StringIO
-    except:
+    except ImportError:
         from StringIO import StringIO
+    IS_PY2 = True
+else:
+    IS_PY2 = False
 
 idfinder = compile('touserid=(\d*)')
 idfinder2 = compile('name="internalid" value="(\d+)"')
@@ -153,12 +154,16 @@ class Fetion(object):
         return self._getid(mobile)
 
     def open(self, url, data=''):
-        request = Request('http://f.10086.cn/%s' % url, data=urlencode(data).encode())
+        data = urlencode(data)
+        if not IS_PY2:
+            data = data.encode()
+
+        request = Request('http://f.10086.cn/%s' % url, data=data)
         htm = self.opener.open(request).read()
         try:
             htm = GzipFile(fileobj=StringIO(htm)).read()
         finally:
-            if isinstance(htm, str):
+            if IS_PY2:
                 return htm
             else:
                 return htm.decode()

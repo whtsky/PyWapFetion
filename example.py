@@ -1,15 +1,14 @@
-#coding=utf-8
+# coding=utf-8
+
 from __future__ import with_statement
 from PyWapFetion import Fetion, send2self, send
-#仅作参考，详细了解请参考源码
+# 仅作参考，详细了解请参考源码
 
-#快速发送：
+# 快速发送：
 send2self('手机号',  '密码', '信息')
 send('手机号', '密码', '接收方手机号', '信息')
 
 #----------------------------------------------------------------------
-myfetion = Fetion('手机号', '密码')
-
 myfetion = Fetion('手机号', '密码')
 
 myfetion.changestatus('0')  # 改变在线状态
@@ -18,7 +17,7 @@ myfetion.send2self('发给自己的东西')
 myfetion.findid('输入手机号，返回飞信ID')
 myfetion.sendBYid('飞信ID', '消息')
 myfetion.send('手机号', '消息', sm=True)  # 发送飞信信息
-#通过设定sm=True强制发送短信（sm=ShortMessage）
+# 通过设定sm=True强制发送短信（sm=ShortMessage）
 myfetion.send('昵称', '消息')  # 你也可以这么干
 myfetion.addfriend('手机号', '你的昵称（5字以内）')
 myfetion.send(['手机号1', '手机号2', '这就是传说中的群发'], '消息')
@@ -35,7 +34,7 @@ myfetion.send2self('这个是发给自己的定时短信', time='201111201120')
 
 myfetion.changeimpresa('改签名')
 myfetion.alive()  # 保持在线，10分钟以上无操作会被判定为离线
-#如果你想要自动保持在线，那么：
+# 如果你想要自动保持在线，那么：
 from PyWapFetion.AliveKeeper import AliveKeeper
 AliveKeeper(myfetion)
 
