@@ -1,6 +1,7 @@
 #coding=utf-8
 
 import os
+import codecs
 
 from setuptools import setup
 import PyWapFetion
@@ -17,7 +18,7 @@ setup(
 
     url=PyWapFetion.__website__,
     description='A simple python lib for WapFetion',
-    long_description=open(readme, encoding='utf8').read(),
+    long_description=codecs.open(readme, encoding='utf8').read(),
     license=PyWapFetion.__license__,
     classifiers=[
         'Development Status :: 4 - Beta',
