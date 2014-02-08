@@ -2,7 +2,7 @@
 from __future__ import with_statement, absolute_import
 
 __name__ = 'PyWapFetion'
-__version__ = '0.9.5'
+__version__ = '0.9.6'
 __author__ = 'whtsky'
 __website__ = 'http://github.com/whtsky/PyWapFetion'
 __license__ = 'MIT'
