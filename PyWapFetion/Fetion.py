@@ -110,7 +110,6 @@ class Fetion(object):
         若登录失败，抛出FetionLoginFail异常
         注意：此函数可能需要从标准输入中读取验证码
         '''
-        resp = json.loads('{}')
         data = {
             'm': self.mobile,
             'pass': self.password,
