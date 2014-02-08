@@ -7,3 +7,7 @@ class FetionNotYourFriend(Exception):
 
 class FetionCsrfTokenFail(Exception):
     pass
+
+
+class FetionLoginFail(Exception):
+    pass

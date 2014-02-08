@@ -1,6 +1,8 @@
 #coding=utf-8
 
 import os
+import time
+import json
 from PyWapFetion.Errors import *
 from re import compile
 from PyWapFetion.Cache import Cache
@@ -30,7 +32,6 @@ else:
 idfinder = compile('touserid=(\d*)')
 idfinder2 = compile('name="internalid" value="(\d+)"')
 csrf_token = compile('<postfield name="csrfToken" value="(\w+)"/>')
-codekey = compile('<img src="/im5/systemimage/verifycode(.*?).jpeg"')
 
 __all__ = ['Fetion']
 
@@ -85,7 +86,7 @@ class Fetion(object):
 
     def alive(self):
         htm = self.open('im/index/indexcenter.action')
-        return '心情' in htm or '正在登陆' in htm
+        return '心情' in htm or '正在登录' in htm
 
     def deletefriend(self, id):
         htm = self.open('im/user/deletefriendsubmit.action?touserid=%s' % id)
@@ -104,23 +105,32 @@ class Fetion(object):
     __exit__ = __del__ = logout
 
     def _login(self):
-        htm = ''
+        '''登录
+        若登录成功，返回True
+        若登录失败，抛出FetionLoginFail异常
+        注意：此函数可能需要从标准输入中读取验证码
+        '''
         data = {
             'm': self.mobile,
             'pass': self.password,
         }
-        while '图形验证码错误' in htm or not htm:
-            page = self.open('/im5/login/loginHtml5.action')
-            matches = codekey.findall(page)
-            if matches:
-                captcha = matches[0]
-                img = self.open('/im5/systemimage/verifycode%s.jpeg' % captcha)
-                open('verifycode.jpeg', 'wb').write(img)
-                captchacode = input('captchaCode:')
-                data['captchaCode'] = captchacode
+        htm = self.open('/im5/login/loginHtml5.action', data)
+        resp = json.loads(htm)
+        if resp.get('checkCodeKey', 'false') == 'true':
+            request = Request('http://f.10086.cn/im5/systemimage/verifycode%d.jpeg' % time.time())
+            img = self.opener.open(request).read()
+            with open('verifycode.jpeg', 'wb') as verifycodefile:
+                verifycodefile.write(img)
+
+            captchacode = input('captchaCode:')
+            data['captchaCode'] = captchacode
             htm = self.open('/im5/login/loginHtml5.action', data)
-        self.alive()
-        return '登录' in htm
+            resp = json.loads(htm)
+
+        if resp['loginstate'] == '200':
+            return True
+        else:
+            raise FetionLoginFail(resp['tip'])
 
     def sendBYid(self, id, message, sm=False):
         url = 'im/chat/sendShortMsg.action?touserid=%s' % id
