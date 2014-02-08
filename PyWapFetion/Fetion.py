@@ -86,7 +86,7 @@ class Fetion(object):
 
     def alive(self):
         htm = self.open('im/index/indexcenter.action')
-        return '心情' in htm or '正在登陆' in htm
+        return '心情' in htm or '正在登录' in htm
 
     def deletefriend(self, id):
         htm = self.open('im/user/deletefriendsubmit.action?touserid=%s' % id)
